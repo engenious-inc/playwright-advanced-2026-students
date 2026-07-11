@@ -1,19 +1,23 @@
 import type { Page } from '@playwright/test';
+import { getLlmClient } from './llm-client.js';
+import { parseVisionResponse } from './parse.js';
 
 /**
- * Tier 3 — vision-model resolver on screenshots.
+ * Tier 3 — vision model on a screenshot (M11 lecture 11.D).
  *
- * Referenced in M11 lecture 11.D. The full implementation makes a call to a
- * vision-capable Claude model with a page screenshot. Like tier 2, this is a
- * typed stub on main; the working implementation ships on the
- * `m11-tiered-model` branch.
+ * The last resort: for surfaces with no usable a11y signal (canvas video
+ * players, ad overlays), screenshot the page and ask a vision-capable Claude
+ * model for the target's pixel bounding box. Uses Opus — the most cognitively
+ * demanding tier — and costs ~5-10× tier 2, so the orchestrator only reaches it
+ * after tiers 1 and 2 miss.
  *
- * When the working implementation is unavailable (no API key, network off,
- * etc.), this stub returns null so callers fail explicitly rather than
- * silently mis-clicking.
+ * Returns null when there is no API key or confidence is below
+ * {@link CONFIDENCE_THRESHOLD}. `clickVisionTarget` clicks the box center; pair
+ * it with a downstream assertion (11.F) since vision can misclick.
  */
 
 const CONFIDENCE_THRESHOLD = 0.7;
+const MODEL = 'claude-opus-4-8';
 
 export type VisionLocation = {
   x: number;
@@ -24,8 +28,51 @@ export type VisionLocation = {
   tier: 3;
 };
 
-export async function tier3Locate(_page: Page, _query: string): Promise<VisionLocation | null> {
-  return null;
+export async function tier3Locate(page: Page, query: string): Promise<VisionLocation | null> {
+  const client = getLlmClient();
+  if (!client) return null;
+
+  const screenshot = await page.screenshot({ type: 'png', fullPage: false });
+
+  const response = await client.messages.create({
+    model: MODEL,
+    max_tokens: 300,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: 'image/png',
+              data: screenshot.toString('base64'),
+            },
+          },
+          {
+            type: 'text',
+            text: `Find the single element that best matches the query and return its
+bounding box in pixel coordinates.
+
+QUERY: "${query}"
+
+Respond ONLY with a JSON object:
+{ "x": int, "y": int, "width": int, "height": int, "confidence": 0.0-1.0 }
+The (x, y) is the top-left of the bounding box.
+If you cannot identify a match with confidence >= ${CONFIDENCE_THRESHOLD}, respond with
+{ "x": 0, "y": 0, "width": 0, "height": 0, "confidence": 0.0 }.`,
+          },
+        ],
+      },
+    ],
+  });
+
+  const text = response.content[0]?.type === 'text' ? (response.content[0].text ?? '') : '';
+  const parsed = parseVisionResponse(text);
+
+  if (!parsed || parsed.confidence < CONFIDENCE_THRESHOLD) return null;
+
+  return { ...parsed, tier: 3 };
 }
 
 export async function clickVisionTarget(page: Page, target: VisionLocation): Promise<void> {
@@ -34,4 +81,4 @@ export async function clickVisionTarget(page: Page, target: VisionLocation): Pro
   await page.mouse.click(x, y);
 }
 
-export { CONFIDENCE_THRESHOLD };
+export { CONFIDENCE_THRESHOLD, MODEL };
