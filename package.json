@@ -69,5 +69,8 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0"
   }
 }
