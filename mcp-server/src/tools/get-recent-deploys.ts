@@ -1,5 +1,5 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { fixtureDeploys } from '../data/fixtures.js';
+import { getRecentDeploys as queryRecentDeploys } from '../data/db.js';
 
 interface GetRecentDeploysArgs {
   limit: number | undefined;
@@ -7,9 +7,7 @@ interface GetRecentDeploysArgs {
 
 export const getRecentDeploys = async (args: GetRecentDeploysArgs): Promise<CallToolResult> => {
   const limit = args.limit ?? 10;
-  const sorted = [...fixtureDeploys]
-    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
-    .slice(0, limit);
+  const sorted = queryRecentDeploys(limit);
 
   return {
     content: [{ type: 'text', text: JSON.stringify(sorted, null, 2) }],

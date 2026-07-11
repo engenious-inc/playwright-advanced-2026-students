@@ -1,5 +1,5 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { fixtureSnapshots } from '../data/fixtures.js';
+import { getSnapshot } from '../data/db.js';
 
 interface CompareAriaSnapshotsArgs {
   baseline_id: string;
@@ -30,8 +30,8 @@ const diffLines = (baseline: string, candidate: string): LineDiff[] => {
 export const compareAriaSnapshots = async (
   args: CompareAriaSnapshotsArgs,
 ): Promise<CallToolResult> => {
-  const baseline = fixtureSnapshots[args.baseline_id];
-  const candidate = fixtureSnapshots[args.candidate_id];
+  const baseline = getSnapshot(args.baseline_id);
+  const candidate = getSnapshot(args.candidate_id);
 
   if (baseline === undefined || candidate === undefined) {
     throw new Error(

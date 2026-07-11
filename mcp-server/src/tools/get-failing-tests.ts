@@ -1,5 +1,5 @@
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { fixtureFailures } from '../data/fixtures.js';
+import { getFailuresSince } from '../data/db.js';
 
 interface GetFailingTestsArgs {
   since: string | undefined;
@@ -11,9 +11,7 @@ export const getFailingTests = async (args: GetFailingTestsArgs): Promise<CallTo
     args.since !== undefined ? Date.parse(args.since) : Date.now() - 24 * 60 * 60 * 1000;
   const limit = args.limit ?? 50;
 
-  const filtered = fixtureFailures
-    .filter((failure) => Date.parse(failure.timestamp) >= sinceMs)
-    .slice(0, limit);
+  const filtered = getFailuresSince(sinceMs, limit);
 
   return {
     content: [{ type: 'text', text: JSON.stringify(filtered, null, 2) }],
