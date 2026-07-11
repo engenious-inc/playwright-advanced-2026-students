@@ -1,0 +1,10 @@
+# If AGENTS.md changed, regenerate derived instruction files (M09 lecture 9.C).
+if git diff --cached --name-only | grep -q "^AGENTS.md$"; then
+  echo "AGENTS.md changed — running sync-instructions..."
+  node scripts/sync-instructions.mjs
+  git add CLAUDE.md .cursor/rules/index.mdc .github/copilot-instructions.md
+fi
+
+# Block bad commits early.
+npm run lint -- --max-warnings=0
+npm run typecheck

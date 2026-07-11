@@ -1,0 +1,4 @@
+{
+  "login.spec.ts": { "lines": { "total": 120, "covered": 95, "pct": 79.2 } },
+  "checkout.spec.ts": { "lines": { "total": 88, "covered": 72, "pct": 81.8 } }
+}

@@ -1,0 +1,15 @@
+# Local scratch / agent working dirs — never format or check
+.superpowers/
+# Dependencies and build output
+node_modules/
+dist/
+# Generated test / coverage artifacts
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+coverage/
+.nyc_output/
+# Local runtime data (gitignored; may contain secrets)
+captures/
+.auth/

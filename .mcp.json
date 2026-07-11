@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "playwright-test": {
+      "command": "npx",
+      "args": ["playwright", "run-test-mcp-server"]
+    },
+    "qa-workflow": {
+      "command": "npx",
+      "args": ["tsx", "mcp-server/src/index.ts"]
+    }
+  }
+}

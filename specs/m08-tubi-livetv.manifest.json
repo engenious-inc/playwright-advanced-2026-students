@@ -1,0 +1,89 @@
+{
+  "project": "tubi-live-tv",
+  "$comment": "Declarative, machine-consumable manifest for M08 lecture 8.F. The single source of truth that scripts/gen-framework.mjs compiles into a page object, fixtures, a seed spec, and journey specs under examples/m08-manifest/generated/. Steps and assertions are STRUCTURED (not prose) so generation is deterministic. Regenerate with `npm run gen:framework`; never hand-edit the output.",
+  "playwrightFramework": {
+    "basePage": true,
+    "outDir": "examples/m08-manifest/generated",
+    "seedSpec": "tests/seed.spec.ts"
+  },
+  "pages": [
+    {
+      "name": "TubiLiveTvPage",
+      "path": "/live",
+      "locators": {
+        "categoryNav": { "role": "navigation", "name": "Categories" },
+        "channelRows": { "testId": "channel-list-item" },
+        "player": {
+          "css": "video",
+          "note": "no semantic role; the video element is the player surface"
+        }
+      },
+      "actions": [
+        {
+          "name": "openLiveTv",
+          "params": [],
+          "step": "open Live TV from the home menubar",
+          "body": "await this.categoryNav().getByText('Live TV').click();"
+        },
+        {
+          "name": "openChannel",
+          "params": ["index: number"],
+          "step": "click the channel row at the given index",
+          "body": "await this.channelRows().nth(index).click();"
+        }
+      ]
+    }
+  ],
+  "journeys": [
+    {
+      "id": "live-tv.reachable",
+      "page": "TubiLiveTvPage",
+      "requirement": "Live TV is reachable from the home page",
+      "risk": "Users cannot find Live TV -> lost live-ad revenue",
+      "owner": "live-experience",
+      "layer": "ui",
+      "ciTier": "smoke",
+      "evidence": "URL matches /live and the category nav stays visible",
+      "steps": [{ "step": 1, "action": "openLiveTv" }],
+      "assert": [
+        { "kind": "url", "urlRegex": "/live" },
+        { "kind": "visible", "locator": "categoryNav" }
+      ]
+    },
+    {
+      "id": "live-tv.guide-lists-channels",
+      "page": "TubiLiveTvPage",
+      "requirement": "Channel guide displays current channel listings",
+      "risk": "Empty or short guide -> viewers see no channels to watch",
+      "owner": "live-experience",
+      "layer": "ui",
+      "ciTier": "full",
+      "evidence": "at least 10 channelRows visible after the guide loads",
+      "steps": [{ "step": 1, "action": "openLiveTv" }],
+      "assert": [
+        { "kind": "count", "locator": "channelRows", "op": ">=", "value": 10, "poll": true }
+      ]
+    },
+    {
+      "id": "live-tv.channel-opens-player",
+      "page": "TubiLiveTvPage",
+      "requirement": "Clicking a channel opens the player",
+      "risk": "Channel click dead-ends -> no playback, core product failure",
+      "owner": "playback",
+      "layer": "ui",
+      "ciTier": "smoke",
+      "evidence": "URL matches /live/<id> and the video element is visible",
+      "steps": [
+        { "step": 1, "action": "openLiveTv" },
+        { "step": 2, "action": "openChannel", "args": [0] }
+      ],
+      "assert": [
+        { "kind": "url", "urlRegex": "/live/\\d+" },
+        { "kind": "visible", "locator": "player" }
+      ]
+    }
+  ],
+  "seed": {
+    "note": "Anonymous Live TV browse needs no data seeding; the seed asserts the anchor site is reachable before the journey suite runs. Excluded from normal runs via testIgnore ['**/seed.spec.ts']."
+  }
+}

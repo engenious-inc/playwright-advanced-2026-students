@@ -1,0 +1,32 @@
+- navigation:
+    - link "Tubi logo":
+        - /url: /
+        - img "Tubi logo"
+    - menubar:
+        - menuitem "Browse"
+        - menuitem "Movies"
+        - menuitem "TV Shows"
+        - menuitem "Live TV"
+        - menuitem "Español"
+        - menuitem "Tubi Kids"
+        - menuitem "FIFA World Cup™ FOX Hub"
+    - img "Help Icon"
+    - text: Language English
+    - img "Arrowhead Down Icon"
+    - link "Help Center":
+        - /url: /help-center
+    - link "Terms of Use":
+        - /url: /static/terms
+    - link "Privacy Policy":
+        - /url: /static/privacy
+    - link "Contact Support":
+        - /url: /static/support
+    - img
+    - text: Now you can change your default language
+    - link "Sign In":
+        - /url: /login
+    - link "Register":
+        - /url: /signup
+    - link:
+        - /url: /search
+        - img

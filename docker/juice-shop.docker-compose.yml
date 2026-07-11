@@ -1,0 +1,16 @@
+services:
+  juice-shop:
+    image: bkimminich/juice-shop:v17.1.1
+    container_name: pwa-juice-shop
+    restart: unless-stopped
+    # Distroless image — no shell/wget/curl. Readiness is polled via the proxy (CI + local curl).
+
+  juice-shop-proxy:
+    build: ./juice-shop-proxy
+    container_name: pwa-juice-shop-proxy
+    ports:
+      - '3000:3000'
+    depends_on:
+      juice-shop:
+        condition: service_started
+    restart: unless-stopped

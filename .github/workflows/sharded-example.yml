@@ -1,0 +1,102 @@
+# Reference implementation of the sharded CI pattern taught in M16 lecture 16.A:
+# matrix shards -> blob reporter -> merge-reports -> one unified HTML report,
+# plus browser caching. The default PR gate is ci.yml (a single job — "profile
+# before you shard"). This is the "graduate to sharding" reference; it runs on
+# demand (workflow_dispatch) rather than on every PR so the fast gate stays fast
+# and this doesn't multiply CI cost.
+name: CI (sharded reference — M16 16.A)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: shard ${{ matrix.shard }}/4
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      # Don't cancel the other shards when one fails — we still want a full report.
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Browser caching (a 16.A economics beat) — keyed on the installed Playwright version.
+      - name: Get Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium-firefox-webkit
+
+      - run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Start Juice Shop
+        run: docker compose -f docker/juice-shop.docker-compose.yml up -d
+
+      - name: Wait for Juice Shop
+        run: |
+          for i in {1..60}; do
+            curl -fsS http://localhost:3000 > /dev/null && break
+            sleep 2
+          done
+
+      # The blob reporter (16.A): each shard writes a portable blob, not HTML.
+      - name: Run shard
+        run: npx playwright test --shard=${{ matrix.shard }}/4 --reporter=blob
+
+      - name: Upload blob report
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 3
+
+  merge:
+    name: merge reports
+    # Merge even if a shard failed, so there is always one report to read.
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Download all shard blobs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: blob-report-*
+          path: all-blob-reports
+          merge-multiple: true
+
+      # merge-reports (16.A): combine the shard blobs into one HTML report.
+      - name: Merge into one HTML report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload unified HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: playwright-report
+          retention-days: 7
+# PR fast-feedback beats from 16.A (use in a PR-triggered job, not shown here to
+# keep the reference focused):
+#   npx playwright test --only-changed=origin/main   # only specs the diff affects
+#   npx playwright test --last-failed                 # rerun the previous failures

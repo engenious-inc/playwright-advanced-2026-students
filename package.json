@@ -1,0 +1,73 @@
+{
+  "name": "playwright-advanced-2026",
+  "version": "1.0.0",
+  "description": "Companion repo for Playwright Advanced 2026 — From Production Failures to Self-Healing Agents",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "test": "playwright test --grep-invert @healer-demo",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "trace": "playwright show-trace",
+    "codegen": "playwright codegen",
+    "agents:init": "playwright init-agents --loop=claude",
+    "lint": "eslint . --max-warnings=0 --ignore-pattern 'tests/m09/demo-bad.spec.ts'",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "lint:generated": "node scripts/gen-framework.mjs --check",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run lint:generated",
+    "brag": "node scripts/brag.mjs",
+    "gen:framework": "node scripts/gen-framework.mjs",
+    "juice-shop:up": "docker compose -f docker/juice-shop.docker-compose.yml up -d",
+    "juice-shop:down": "docker compose -f docker/juice-shop.docker-compose.yml down",
+    "mcp-server:dev": "tsx mcp-server/src/index.ts",
+    "test:mcp": "tsx --test mcp-server/test/**/*.test.ts",
+    "test:m11": "playwright test tests/m11",
+    "test:m12": "playwright test tests/m12",
+    "test:m13": "playwright test tests/m13",
+    "test:m14": "playwright test tests/m14 --project=juice-shop",
+    "test:m15": "playwright test tests/m15 tests/auth.setup.ts --project=setup --project=juice-shop",
+    "test:m20": "playwright test tests/m20 --project=chromium",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@faker-js/faker": "^9.0.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-playwright": "^2.0.0",
+    "husky": "^9.0.0",
+    "lighthouse": "^13.4.0",
+    "lint-staged": "^15.0.0",
+    "otplib": "^13.4.1",
+    "pdfjs-dist": "^6.1.200",
+    "prettier": "^3.3.0",
+    "shiki": "^4.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "zod": "^3.23.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mts,cts}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
