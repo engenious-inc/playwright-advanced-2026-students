@@ -9,13 +9,13 @@ This repo holds the per-module code for a **20-module** course on production-gra
 
 **Cloud (no local setup):**
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/engenious-inc/playwright-advanced-2026)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/engenious-inc/playwright-advanced-2026-students)
 
 **Local:**
 
 ```bash
-git clone https://github.com/engenious-inc/playwright-advanced-2026
-cd playwright-advanced-2026
+git clone https://github.com/engenious-inc/playwright-advanced-2026-students
+cd playwright-advanced-2026-students
 nvm use            # pins Node 22
 npm install
 npx playwright install --with-deps
