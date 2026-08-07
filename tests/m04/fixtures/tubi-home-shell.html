@@ -1,0 +1,204 @@
+<!doctype html>
+<!-- Hermetic Tubi-home fixture for M04's page.route lessons. Real Tubi class vocabulary
+     (web-header / web-row-header__title / web-carousel / web-content-tile__container), reused
+     from the M03 recon (tests/m03/fixtures/tubi-search-v1.html). Unlike M03's static fixture,
+     category rows render CLIENT-SIDE via fetch('/oz/categories') — a real network call that
+     page.route intercepts — because M04 teaches page.route mocking, which needs something real
+     to intercept. Poster art is real Tubi imagery (tests/m03/fixtures/posters/), cycled across
+     rows since M04's categories aren't 1:1 with M03's per-title poster set. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Watch Free Movies and TV Shows Online | Tubi</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0d0d10;
+        color: #fff;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          sans-serif;
+        padding: 26px 44px 60px;
+      }
+      .web-header {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+      .logo {
+        color: #ffff13;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      nav {
+        flex: 1;
+      }
+      .web-header nav a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 28px;
+        opacity: 0.92;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .search label {
+        font-size: 18px;
+        font-weight: 600;
+        opacity: 0.8;
+      }
+      .search input {
+        background: #1c1c22;
+        border: 1px solid #2b2b34;
+        border-radius: 8px;
+        padding: 12px 18px;
+        color: #fff;
+        font-size: 17px;
+        width: 320px;
+      }
+      .web-row-header__title {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 32px 0 18px;
+      }
+      .web-carousel {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+      .web-content-tile__container {
+        min-width: 0;
+      }
+      .web-content-tile__title {
+        display: block;
+        text-decoration: none;
+        color: #fff;
+      }
+      .web-content-tile__title img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #23232b;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+      }
+      .web-content-tile__title .tt {
+        display: block;
+        margin-top: 12px;
+        font-size: 19px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="web-header">
+      <span class="logo">tubi</span>
+      <nav aria-label="Primary">
+        <a href="#/browse">Browse</a>
+        <a href="#/movies">Movies</a>
+        <a href="#/tv-shows">TV Shows</a>
+        <a href="#/live">Live TV</a>
+      </nav>
+      <div class="search">
+        <label for="q">Search</label>
+        <input id="q" type="text" aria-label="Search Tubi" placeholder="Search Tubi" />
+      </div>
+    </header>
+
+    <main>
+      <!-- "Continue Watching" (real Tubi row vocabulary), NOT "Recommended for You": the first
+           category is named "Recommended For You", and two rows whose accessible names differ only
+           by case make getByRole('region', { name: 'Recommended For You' }) a strict-mode violation
+           the moment personalization is populated (4.D). -->
+      <section role="region" aria-label="Continue Watching" id="personalization-row" hidden>
+        <h2 class="web-row-header__title">Continue Watching</h2>
+        <div class="web-carousel" id="personalization-tiles"></div>
+      </section>
+      <div id="categories-root" aria-busy="true"></div>
+    </main>
+
+    <script>
+      const POSTERS = [
+        'now-you-see-me.jpg',
+        'rango.jpg',
+        'shark-tale.jpg',
+        'bad-teacher.png',
+        'transformers.png',
+        'megamind.png',
+        'dumb-and-dumber.jpg',
+        'cloudy-with-a-chance-of-meatballs.jpg',
+        'furious-7.jpg',
+      ];
+
+      function tile(posterIndex, label) {
+        const poster = POSTERS[posterIndex % POSTERS.length];
+        return `
+          <div class="web-content-tile__container">
+            <a class="web-content-tile__title" href="#/title/${posterIndex}">
+              <img src="posters/${poster}" alt="" />
+              <span class="tt">${label}</span>
+            </a>
+          </div>`;
+      }
+
+      async function loadCategories() {
+        const root = document.getElementById('categories-root');
+        try {
+          const res = await fetch('/oz/categories');
+          const categories = await res.json();
+          let tileCursor = 0;
+          root.innerHTML = categories
+            .map((cat) => {
+              const tiles = [0, 1, 2, 3].map(() => tile(tileCursor++, cat.name)).join('');
+              return `
+                <section role="region" aria-label="${cat.name}">
+                  <h2 class="web-row-header__title">${cat.name}</h2>
+                  <div class="web-carousel">${tiles}</div>
+                </section>`;
+            })
+            .join('');
+        } finally {
+          root.removeAttribute('aria-busy');
+        }
+      }
+
+      async function loadPersonalization() {
+        try {
+          const res = await fetch('/oz/personalization');
+          if (!res.ok) return;
+          const data = await res.json();
+          if (!data.items || !data.items.length) return;
+          const row = document.getElementById('personalization-row');
+          const tiles = document.getElementById('personalization-tiles');
+          // +6 offsets the poster art past the first category row's tiles, so the pinned strip and the
+          // FIRST category row never share posters (later rows reuse the cursor — they are far
+          // below the fold at 1080p and no capture scrolls to them) (and skips the three
+          // landscape/banner images at indices 3-5, which crop to garbage at aspect-ratio 2/3).
+          tiles.innerHTML = data.items.map((item, i) => tile(i + 6, item.name)).join('');
+          row.hidden = false;
+        } catch {
+          // Personalization is best-effort — the row simply stays hidden.
+        }
+      }
+
+      loadCategories();
+      loadPersonalization();
+    </script>
+  </body>
+</html>
