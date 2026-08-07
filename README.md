@@ -79,7 +79,7 @@ npx playwright test tests/m07 tests/m12 --headed --project=chromium --workers=1
 
 ### Release & viewing order
 
-The table above is the **repo's internal organization** — modules keyed by thematic code `M01`–`M20`. **Videos ship and are watched in a different, chronological order**, because the release leads with the agentic modules rather than setup. Learners see a clean, sequential **Module 0 → 20** release order, and the internal `M##` codes **never appear on screen or in video titles**. See [`docs/module-branches.md`](./docs/module-branches.md).
+The table above is the **repo's internal organization** — modules keyed by thematic code `M01`–`M20`. **Modules release in strict syllabus order: Module 0 (orientation) ships at launch alongside Module 1 (the debut), then M2 → M20 follow in sequence.** There is no separate internal-vs-public numbering: the module number, the release order, and the "Module N" label you see in the course are all the same number. Release dates + order (authoritative): [`docs/schedule.md`](./docs/schedule.md).
 
 The `main` branch is the converged "best-practice" destination state — everything taught across the course lands here. Per-module lab branches (e.g. `m07-three-ways`, `m11-tiered-model`) are published so students can `git checkout` the name a lecture references; they currently point at `main` until each module's recording sprint lands module-specific artifacts. See [`docs/module-branches.md`](./docs/module-branches.md).
 
