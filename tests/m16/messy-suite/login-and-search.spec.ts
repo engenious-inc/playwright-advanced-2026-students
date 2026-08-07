@@ -1,77 +1,68 @@
-/* eslint-disable
-     playwright/no-wait-for-timeout,
-     playwright/no-conditional-in-test,
-     playwright/no-conditional-expect,
-     playwright/prefer-web-first-assertions
-   -- INTENTIONAL capstone anti-patterns. This is the `m16-messy-start` state
-      students refactor in 16.G; the smells here are the exercise. Do NOT "fix"
-      this file — the clean destination is the separate refactor. */
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '../../../shared/fixtures/index.js';
 import { skipUnlessJuiceShopUp } from '../../../shared/test-guards.js';
-import { JuiceShopEndpoints } from '../../../shared/anchor-helpers/juice-shop/endpoints.js';
+import { JuiceShopLoginPage } from '../../../shared/anchor-helpers/juice-shop/JuiceShopLoginPage.js';
 
-// SMELL: base URL reached for directly in tests; no page-object, no fixtures.
-const BASE = JuiceShopEndpoints.baseUrl;
+/**
+ * `m16-clean-end` — the destination state of the 16.G capstone refactor.
+ *
+ * Every behaviour the messy suite covered is still covered here. What changed is HOW:
+ * interaction moved into adapters, waiting moved to web-first assertions, credentials moved to
+ * fixtures, and the file-level `eslint-disable` is gone because there is nothing left to silence.
+ *
+ * Diff this against `m16-messy-start` to see the whole refactor.
+ */
 
-// SMELL: banner-dismissal copy-pasted into every test instead of an adapter method.
-async function dismissBannersInline(page: Page): Promise<void> {
-  const cookie = page.getByRole('button', { name: /dismiss cookie message/i });
-  if (await cookie.isVisible({ timeout: 4000 }).catch(() => false)) {
-    await cookie.click();
-  }
-  const welcome = page.getByRole('button', { name: 'Close Welcome Banner' });
-  if (await welcome.isVisible({ timeout: 4000 }).catch(() => false)) {
-    await welcome.click();
-  }
-}
-
-test.describe('M16 messy suite @m16-capstone', () => {
+test.describe('M16 capstone — refactored @m16-capstone', () => {
   test.beforeEach(async ({ request }) => {
     await skipUnlessJuiceShopUp(request);
   });
 
-  test('home shows products after a hard wait', async ({ page }) => {
-    await page.goto(BASE + '/#/');
-    await page.waitForTimeout(3000); // SMELL: hard wait instead of a web-first wait
-    await dismissBannersInline(page); // SMELL: duplicated dismissal
-    // SMELL: raw CSS + .first(); no scoped, role-based assertion.
-    await expect(page.locator('mat-card.ribbon-card').first()).toBeVisible();
+  // M07/M08: the adapter owns navigation, banner dismissal and readiness. The test says what it
+  // is checking, not how to reach it. M03: no hard wait — `goto()` settles on a real signal, and
+  // `toBeVisible()` auto-waits.
+  test('home shows product cards', async ({ juiceShopHome }) => {
+    await juiceShopHome.goto();
+
+    await expect(juiceShopHome.productCards.first()).toBeVisible();
   });
 
-  test('search control is present', async ({ page }) => {
-    await page.goto(BASE + '/#/');
-    await page.waitForTimeout(3000); // SMELL: hard wait
-    await dismissBannersInline(page); // SMELL: duplicated dismissal (again)
-    // SMELL: weak assertion — reads a boolean then asserts truthiness instead of
-    // an auto-waiting web-first matcher.
-    const visible = await page.getByLabel('Click to search').isVisible();
-    expect(visible).toBeTruthy();
+  // M03/M09: was `const visible = await …isVisible(); expect(visible).toBeTruthy()` — a snapshot
+  // read with no retry, which flakes the moment the app is a frame slower. The web-first matcher
+  // retries until the timeout.
+  test('search control is present', async ({ juiceShopHome }) => {
+    await juiceShopHome.goto();
+
+    await expect(juiceShopHome.searchBox).toBeVisible();
   });
 
-  // SMELL: FALSE POSITIVE. Named as if it verifies login, but it only asserts the
-  // URL is a string — which is always true. It never logs in and never checks a
-  // logged-in state. Passes green while testing nothing.
+  // M09: this test was the false positive — named "admin can log in", asserting `toHaveURL(/.*/)`,
+  // which is true of every page ever loaded. It never logged in and never checked a logged-in
+  // state. It now performs the login and asserts the post-condition its name always claimed.
+  //
+  // M14/M15: credentials come from JuiceShopFixtures via the adapter, not typed inline.
   test('admin can log in', async ({ page }) => {
-    await page.goto(BASE + '/#/login');
-    await page.waitForTimeout(2000);
-    await expect(page).toHaveURL(/.*/);
+    const login = new JuiceShopLoginPage(page);
+    await login.goto();
+
+    await login.loginAsDefaultAdmin();
+
+    // The real post-condition: the "Go to login page" control is gone once authenticated.
+    await expect(page.getByRole('button', { name: 'Go to login page' })).toHaveCount(0);
   });
 
-  test('login with inline credentials', async ({ page }) => {
-    await page.goto(BASE + '/#/login');
-    await page.waitForTimeout(2000); // SMELL: hard wait
-    await dismissBannersInline(page); // SMELL: duplicated dismissal (third copy)
-    // SMELL: credentials hard-coded inline, duplicating shared/.../endpoints.ts fixtures.
-    await page.getByLabel('Text field for the login email').fill('admin@juice-sh.op');
-    await page.getByLabel('Text field for the login password').fill('admin123');
-    await page.locator('#loginButton').click(); // SMELL: raw CSS id over getByRole
-    await page.waitForTimeout(2000); // SMELL: hard wait for navigation
-    // SMELL: conditional branching in a test — a test should assert one behavior.
-    const cart = page.getByRole('button', { name: /shopping cart/i });
-    if (await cart.isVisible().catch(() => false)) {
-      await expect(cart).toBeVisible();
-    } else {
-      expect(page.url()).toContain('login');
-    }
+  // M09: the messy version branched on `if (await cart.isVisible())` and asserted a different
+  // thing in each arm — a test that cannot fail, because whichever way the app behaved some
+  // assertion passed. Conditional coverage is not coverage. This asserts one outcome: a
+  // successful login leaves the app on the product search route.
+  //
+  // The basket control that the messy version's `if` arm reached for is asserted once, in
+  // basket-smells.spec.ts, where the basket concern belongs.
+  test('a successful login lands on the product search route', async ({ page }) => {
+    const login = new JuiceShopLoginPage(page);
+    await login.goto();
+
+    await login.loginAsDefaultAdmin();
+
+    await expect(page).toHaveURL(/#\/search/);
   });
 });

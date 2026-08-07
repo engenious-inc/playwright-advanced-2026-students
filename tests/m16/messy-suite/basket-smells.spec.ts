@@ -1,31 +1,36 @@
-/* eslint-disable playwright/no-wait-for-timeout -- intentional capstone anti-patterns */
-import { test, expect } from '@playwright/test';
+import { existsSync } from 'node:fs';
+import { test, expect } from '../../../shared/fixtures/index.js';
 import { skipUnlessJuiceShopUp } from '../../../shared/test-guards.js';
-import { JuiceShopEndpoints } from '../../../shared/anchor-helpers/juice-shop/endpoints.js';
 
-test.describe('M16 messy suite @m16-capstone', () => {
+const authPath = '.auth/juice-shop-admin.json';
+
+/**
+ * `m16-clean-end` — refactored from the messy-start version of this file.
+ *
+ * Was: an inline login duplicating credentials, three `waitForTimeout` calls, a raw `#loginButton`
+ * click, and a cart assertion. The hard waits were doing the job the assertions should do — and
+ * doing it worse: waiting the full 2s when the page is ready in 200ms, and still failing when it
+ * needs 2.1s.
+ */
+
+test.describe('M16 capstone — refactored @m16-capstone', () => {
+  // M15: reuse the session tests/auth.setup.ts already captured. Same guard M15's own spec uses,
+  // so running this file without the setup project skips rather than fails confusingly.
+  if (existsSync(authPath)) {
+    test.use({ storageState: authPath });
+  }
+
   test.beforeEach(async ({ request }) => {
+    test.skip(!existsSync(authPath), 'Run the setup project first to capture the admin session');
     await skipUnlessJuiceShopUp(request);
   });
 
-  test('basket button exists after hard wait', async ({ page }) => {
-    // SMELL: a third copy of the login flow, with the credentials typed inline again —
-    // duplicating both the other spec in this directory AND shared/.../endpoints.ts.
-    await page.goto(JuiceShopEndpoints.baseUrl + '/#/login');
-    await page.waitForTimeout(2000); // SMELL: hard wait
-    await page
-      .getByRole('button', { name: /dismiss cookie message/i })
-      .click({ timeout: 4000 })
-      .catch(() => undefined);
-    // SMELL: banner dismissal copy-pasted here too — a fourth copy of the same six lines.
-    await page
-      .getByRole('button', { name: 'Close Welcome Banner' })
-      .click({ timeout: 4000 })
-      .catch(() => undefined);
-    await page.getByLabel('Text field for the login email').fill('admin@juice-sh.op');
-    await page.getByLabel('Text field for the login password').fill('admin123');
-    await page.locator('#loginButton').click(); // SMELL: raw CSS id over a role locator
-    await page.waitForTimeout(2000); // SMELL: hard wait standing in for a real signal
+  // The basket control only exists for an authenticated user, so this test depends on the auth
+  // that `tests/auth.setup.ts` already performs — no second login, no second copy of the
+  // credentials. M15's storage state is what makes that free.
+  test('logged-in user sees the basket control', async ({ juiceShopHome, page }) => {
+    await juiceShopHome.goto();
+
     await expect(page.getByRole('button', { name: /shopping cart/i })).toBeVisible();
   });
 });

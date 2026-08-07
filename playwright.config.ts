@@ -4,6 +4,9 @@ const isCI = !!process.env.CI;
 
 /** Paths relative to testDir; root testIgnore alone does not filter all projects. */
 const ciSkipPatterns = isCI ? ['m07/**', 'm08/**', 'brag/**', 'seed.spec.ts'] : [];
+/** Recording-only specs: minutes of deliberate padTo/beat pacing, no assertions worth gating on.
+ *  Run them explicitly with --config=playwright.capture-fullframe.config.ts when capturing. */
+const CAPTURE_SPECS = '**/*.capture.spec.ts';
 
 export default defineConfig({
   testDir: './tests',
@@ -13,7 +16,7 @@ export default defineConfig({
   // "where this breaks" lesson) — so they are not a deterministic CI signal. They
   // run locally and headed for recording; in CI we skip the Tubi-only spec files.
   // (smoke.spec.ts is mixed Tubi + Juice Shop, so its Tubi test self-skips on CI.)
-  testIgnore: ciSkipPatterns,
+  testIgnore: [CAPTURE_SPECS, ...ciSkipPatterns],
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
@@ -51,12 +54,21 @@ export default defineConfig({
     },
     {
       name: 'juice-shop',
-      // Only specs that actually drive the Juice Shop anchor route here. M16's live spec
-      // (sharding-demo) is pure logic and runs under chromium; the messy-suite is a
-      // deliberately-broken teaching catalogue that is testIgnore'd everywhere — so no
-      // m16 spec belongs behind Docker + auth setup.
-      testMatch: [/m06\/.*\.spec\.ts/, /m14\/.*\.spec\.ts/, /m15\/storage-state\.spec\.ts/],
-      testIgnore: [...ciSkipPatterns],
+      // Only specs that actually drive the Juice Shop anchor route here. M16's sharding-demo is
+      // pure logic and runs under chromium.
+      //
+      // m16/messy-suite joined this list as the final move of the 16.G capstone refactor. At
+      // `m16-messy-start` it was testIgnore'd everywhere — a catalogue of anti-patterns whose
+      // hard waits would have made CI slow and flaky for no benefit. Once refactored it drives
+      // the real anchor and deserves to gate the build like any other suite. Earning a place in
+      // CI is the outcome the capstone is graded on; this line is where that shows up.
+      testMatch: [
+        /m06\/.*\.spec\.ts/,
+        /m14\/.*\.spec\.ts/,
+        /m15\/storage-state\.spec\.ts/,
+        /m16\/messy-suite\/.*\.spec\.ts/,
+      ],
+      testIgnore: [CAPTURE_SPECS, ...ciSkipPatterns],
       dependencies: ['setup'],
       use: {
         ...devices['Desktop Chrome'],
@@ -66,9 +78,12 @@ export default defineConfig({
     {
       name: 'chromium',
       testIgnore: [
+        CAPTURE_SPECS,
         '**/m06/**',
         '**/m14/**',
         '**/m15/storage-state.spec.ts',
+        // m16/messy-suite now runs in the `juice-shop` project (it needs Docker + auth setup),
+        // so it is excluded here the same way m06/m14 are — not because it is broken.
         '**/m16/messy-suite/**',
         ...ciSkipPatterns,
       ],
@@ -77,19 +92,40 @@ export default defineConfig({
     },
     {
       name: 'firefox',
-      testIgnore: ['**/m06/**', '**/m14/**', '**/m15/**', '**/m16/**', ...ciSkipPatterns],
+      testIgnore: [
+        CAPTURE_SPECS,
+        '**/m06/**',
+        '**/m14/**',
+        '**/m15/**',
+        '**/m16/**',
+        ...ciSkipPatterns,
+      ],
       use: { ...devices['Desktop Firefox'] },
       dependencies: ['setup'],
     },
     {
       name: 'webkit',
-      testIgnore: ['**/m06/**', '**/m14/**', '**/m15/**', '**/m16/**', ...ciSkipPatterns],
+      testIgnore: [
+        CAPTURE_SPECS,
+        '**/m06/**',
+        '**/m14/**',
+        '**/m15/**',
+        '**/m16/**',
+        ...ciSkipPatterns,
+      ],
       use: { ...devices['Desktop Safari'] },
       dependencies: ['setup'],
     },
     {
       name: 'mobile-chrome',
-      testIgnore: ['**/m06/**', '**/m14/**', '**/m15/**', '**/m16/**', ...ciSkipPatterns],
+      testIgnore: [
+        CAPTURE_SPECS,
+        '**/m06/**',
+        '**/m14/**',
+        '**/m15/**',
+        '**/m16/**',
+        ...ciSkipPatterns,
+      ],
       use: { ...devices['Pixel 7'] },
       dependencies: ['setup'],
       // Tubi's desktop menubar specs assume a wide viewport — they fail on Pixel 7.
