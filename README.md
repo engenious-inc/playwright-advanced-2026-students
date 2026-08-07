@@ -121,4 +121,9 @@ npm run juice-shop:down  # stops it
 
 ## License
 
-MIT. See [`LICENSE`](./LICENSE).
+MIT for the code, tests, and docs here — see [`LICENSE`](./LICENSE).
+
+The movie poster artwork under `tests/m03/fixtures/posters/` is **not** covered:
+it belongs to its respective copyright holders and is included only so the
+Module 3 locator fixtures match the real Tubi layout. Replace those files before
+publishing a fork. See [`NOTICE`](./NOTICE).

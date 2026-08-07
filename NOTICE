@@ -1,0 +1,50 @@
+NOTICE — third-party material
+=============================
+
+The MIT License in LICENSE covers the original source code, tests, and
+documentation written for Playwright Advanced 2026. It does not cover the
+third-party material listed below, which is bundled only so the teaching
+fixtures resemble the real interfaces the course inspects.
+
+
+Movie poster artwork — tests/m03/fixtures/posters/
+--------------------------------------------------
+
+Nine images retrieved from tubitv.com's Movies page and stored at UI-thumbnail
+scale (408x583 and smaller):
+
+    bad-teacher.png                        megamind.png
+    cloudy-with-a-chance-of-meatballs.jpg  now-you-see-me.jpg
+    dumb-and-dumber.jpg                    rango.jpg
+    furious-7.jpg                          shark-tale.jpg
+    transformers.png
+
+Each remains the property of its respective copyright holder. They appear here
+for one reason: Module 3 teaches that role- and name-based locators survive a
+UI restructure that breaks a CSS selector chain, and that lesson is only honest
+if the fixture reproduces the real Tubi card layout — including its artwork —
+rather than coloured rectangles.
+
+These files are NOT licensed under the MIT License and no rights in them are
+granted by it. Do not redistribute, sublicense, or use them commercially.
+Nothing in LICENSE should be read as conveying any right in this artwork.
+
+If you fork this repository and intend to publish or distribute your fork,
+replace these files with your own artwork first. The fixtures reference them
+only by filename, so any nine images of similar dimensions will work and every
+test will still pass.
+
+
+Names and marks
+---------------
+
+Tubi is a trademark of Tubi, Inc. References to Tubi, OWASP Juice Shop, and
+Expand Testing are nominative: the course inspects these public products as
+teaching anchors and claims no affiliation with or endorsement by any of them.
+
+
+OWASP Juice Shop
+----------------
+
+Run from the published Docker image `bkimminich/juice-shop` and licensed by its
+own authors under the MIT License. It is not vendored in this repository.
