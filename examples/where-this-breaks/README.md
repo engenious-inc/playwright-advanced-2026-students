@@ -4,6 +4,46 @@ Runnable counter-examples paired with the "Where this breaks in production" lect
 
 The course's signature beat is honesty about failure modes — every module ends with a 4–6 minute segment on how the technique just taught can fail in production. This directory holds the **executable** version of those failure modes: a test that demonstrates the failure, plus a comment explaining what the production-equivalent looks like.
 
+## Coverage
+
+Run everything: `npx playwright test examples/where-this-breaks --config=examples/where-this-breaks/playwright.config.ts`
+
+| Module | Directory                      | Failure mode                                     |
+| ------ | ------------------------------ | ------------------------------------------------ |
+| M02    | `m02-setup-race`               | setup ran but half-succeeded                     |
+| M03    | `m03-locator-collisions`       | role-name collision · i18n label drift           |
+| M04    | `m04-route-blindspots`         | service-worker bypass of `page.route`            |
+| M05    | `m05-har-leaks-pii`            | HAR captures token + PII verbatim                |
+| M06    | `m06-lying-openapi`            | schema passes while the payload is wrong         |
+| M06    | `m06-pdf-exact-string`         | brittle exact-string PDF assertion               |
+| M09    | `m09-agents-drift`             | instruction file vs enforced lint rules          |
+| M10    | `m10-tool-collisions`          | two servers, one tool name, silent overwrite     |
+| M11    | `m11-cache-poisoning`          | stale Tier 1 hit resolves to the wrong control   |
+| M12    | `m12-tainted-canvas`           | draw succeeds, pixel read throws `SecurityError` |
+| M13    | `m13-clock-vs-server-time`     | `page.clock` moves the client, not the server    |
+| M14    | `m14-fixture-pollution`        | worker-scoped fixture mutated across tests       |
+| M15    | `m15-stale-storage-state`      | revoked session still renders signed-in          |
+| M16    | `m16-refactor-loses-coverage`  | refactor stays green while dropping an assertion |
+| M17    | `m17-performance-flake`        | cold-vs-warm cache divergence                    |
+| M19    | `m19-component-vs-integration` | components green, composed page broken           |
+| M20    | `m20-green-judge`              | judge passes an answer that is 10x wrong         |
+
+### Modules with no runnable example, and why
+
+Not every failure mode can be executed honestly. Faking one would model the anti-pattern the
+lecture warns against, so these are documented rather than staged:
+
+- **M01** — the "where this breaks" beat is introduced here as a recurring habit; the module names
+  no technique-specific failure mode to reproduce.
+- **M07, M08** — the failures are agent behaviours: ambiguous goals producing divergent plans,
+  long-running loops drifting. Reproducing them requires a live model, which would make the example
+  non-deterministic and test the vendor rather than the lesson.
+- **M18** — alert fatigue, canary drift and monitoring blind spots are operational failures that
+  appear over weeks of production signal, not within a test run.
+- **M04's timing shift** — see `m04-route-blindspots/README.md`: an honest demo needs a genuinely
+  slow arm, and this repo bans bare `setTimeout` in `tests/**` precisely so nobody papers over a
+  race with artificial delay.
+
 ## Convention
 
 ```
