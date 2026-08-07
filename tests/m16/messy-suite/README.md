@@ -1,29 +1,50 @@
-# M16 capstone — messy suite (`m16-messy-start`)
+# M16 capstone — the messy suite (`m16-messy-start`)
 
-This is the deliberately-awful Playwright suite students refactor in lecture
-**16.G** — the "before" state. **Do not fix these files**; the smells _are_ the
-exercise. The clean destination is the separate `m16-clean-end` refactor.
-
-The suite is `testIgnore`'d in every project (`playwright.config.ts`), so it does
-not run in normal CI — it's a `git checkout m16-capstone` homework artifact. Run
-it deliberately against a live Juice Shop:
+**You are looking at the starting state of the capstone.** These specs are deliberately awful.
+Every smell here is intentional and maps to a lecture earlier in the course.
 
 ```bash
-npm run juice-shop:up
-npx playwright test tests/m16/messy-suite --project=juice-shop
+git checkout m16-messy-start   # this state — refactor from here
+git checkout m16-clean-end     # the destination
+git diff m16-messy-start m16-clean-end -- tests/m16 playwright.config.ts
 ```
 
-## Anti-patterns catalogued here (each maps to a refactor move in 16.G)
+That diff is the whole capstone.
 
-| File                       | Smells                                                                                                                                                                                                                            |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `basket-smells.spec.ts`    | hard `waitForTimeout`; no page-object                                                                                                                                                                                             |
-| `login-and-search.spec.ts` | hard waits; no POM/fixtures; duplicated banner-dismissal; raw CSS ids; weak `isVisible()` assertion; a **false-positive** test that asserts nothing; conditional branching in a test; inline credentials duplicating the fixtures |
+## The rule
 
-Refactor targets (16.G): role-based locators (M03) → adapter + typed fixtures
-(M07/M14) → storage-state auth (M15) → delete hard waits, web-first assertions →
-kill the false positive → lint clean (M02/M09). Preserve every assertion.
+**Preserve every behaviour. Change how it is tested, never whether it is.**
 
-The end state is tag `m16-clean-end`; students `diff` start↔end. The full
-~30-test suite and the recorded live refactor land during the 16.G recording
-sprint. See `docs/m16-refactor-walkthrough.md`.
+The one exception is `admin can log in` — a false positive that asserts
+`toHaveURL(/.*/)`, which is true of every page ever loaded. It tests nothing today, so "preserving
+its behaviour" means giving it the assertion its name always implied.
+
+## What is wrong here, and where you learned the fix
+
+| Smell in this directory                                | Fix                                     | Module  |
+| ------------------------------------------------------ | --------------------------------------- | ------- |
+| `page.waitForTimeout(...)` hard waits                  | web-first assertions, locator auto-wait | M03     |
+| Raw CSS / `#loginButton` id pins                       | `getByRole` / `getByLabel`              | M03     |
+| `page.goto(BASE + …)` in tests; no page object         | `JuiceShop*Page` adapters               | M07/M08 |
+| `dismissBannersInline` copy-pasted per test            | one adapter method, `dismissBanners()`  | M07     |
+| Credentials typed inline                               | `JuiceShopFixtures` + typed fixtures    | M14     |
+| Every test logs in again                               | `auth.setup.ts` + `storageState`        | M15     |
+| `const v = await …isVisible(); expect(v).toBeTruthy()` | `await expect(locator).toBeVisible()`   | M03/M09 |
+| `admin can log in` asserts `toHaveURL(/.*/)`           | assert the real logged-in state         | M09     |
+| `if/else` branching inside a test                      | split into deterministic tests          | M09     |
+| File-level `eslint-disable` hiding all of the above    | zero violations; delete the disable     | M02/M09 |
+
+## Why this does not run in CI
+
+`playwright.config.ts` carries `'**/m16/messy-suite/**'` in the browser projects' `testIgnore`.
+The suite is a teaching catalogue of anti-patterns — it must not gate anyone's build, and its
+hard waits would make CI slow and flaky for no benefit.
+
+**Removing that `testIgnore` line is part of the refactor.** A clean suite earns its place in CI;
+that is the point of the exercise, and it is visible in the tag diff.
+
+## Grading
+
+The rubric is in `docs/modules/M16-cicd-and-capstone/16G-capstone-refactor.md`; the move-by-move
+walkthrough is `docs/m16-refactor-walkthrough.md`. Judgement is what is being measured — knowing
+what to fix first, and when to stop.

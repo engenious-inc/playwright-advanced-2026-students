@@ -15,7 +15,7 @@ const BASE = JuiceShopEndpoints.baseUrl;
 
 // SMELL: banner-dismissal copy-pasted into every test instead of an adapter method.
 async function dismissBannersInline(page: Page): Promise<void> {
-  const cookie = page.getByRole('link', { name: /dismiss/i });
+  const cookie = page.getByRole('button', { name: /dismiss cookie message/i });
   if (await cookie.isVisible({ timeout: 4000 }).catch(() => false)) {
     await cookie.click();
   }
@@ -35,7 +35,7 @@ test.describe('M16 messy suite @m16-capstone', () => {
     await page.waitForTimeout(3000); // SMELL: hard wait instead of a web-first wait
     await dismissBannersInline(page); // SMELL: duplicated dismissal
     // SMELL: raw CSS + .first(); no scoped, role-based assertion.
-    await expect(page.locator('mat-card[class*="product"]').first()).toBeVisible();
+    await expect(page.locator('mat-card.ribbon-card').first()).toBeVisible();
   });
 
   test('search control is present', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('M16 messy suite @m16-capstone', () => {
     await dismissBannersInline(page); // SMELL: duplicated dismissal (again)
     // SMELL: weak assertion — reads a boolean then asserts truthiness instead of
     // an auto-waiting web-first matcher.
-    const visible = await page.getByRole('button', { name: 'Open search' }).isVisible();
+    const visible = await page.getByLabel('Click to search').isVisible();
     expect(visible).toBeTruthy();
   });
 
@@ -60,6 +60,7 @@ test.describe('M16 messy suite @m16-capstone', () => {
   test('login with inline credentials', async ({ page }) => {
     await page.goto(BASE + '/#/login');
     await page.waitForTimeout(2000); // SMELL: hard wait
+    await dismissBannersInline(page); // SMELL: duplicated dismissal (third copy)
     // SMELL: credentials hard-coded inline, duplicating shared/.../endpoints.ts fixtures.
     await page.getByLabel('Text field for the login email').fill('admin@juice-sh.op');
     await page.getByLabel('Text field for the login password').fill('admin123');
