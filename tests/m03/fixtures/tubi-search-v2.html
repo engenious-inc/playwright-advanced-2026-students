@@ -1,0 +1,202 @@
+<!doctype html>
+<!-- Real-vocabulary Tubi browse fixture (v2) — the "post-restructure" variant. Same content,
+     poster art, and SAME accessible semantics as v1 (nav names, labeled search, role=region rows
+     named "Trending Now"/"Popular Movies", title links), but the structural web-* classes are
+     renamed and re-nested: web-carousel→web-lane, web-content-tile__container→web-tile (+
+     web-tile__inner wrapper), web-content-tile__title→web-tile__title. So the brittle chain
+     `div.web-carousel > div.web-content-tile__container` matches 0 here, while every role/name
+     locator still resolves. This is the honest before/after the lesson demonstrates. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Watch Free Movies and TV Shows Online | Tubi</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0d0d10;
+        color: #fff;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          sans-serif;
+        padding: 26px 44px 60px;
+      }
+      .web-header {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+      .logo {
+        color: #ffff13;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      nav {
+        flex: 1;
+      }
+      .web-header nav a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 28px;
+        opacity: 0.92;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .search label {
+        font-size: 18px;
+        font-weight: 600;
+        opacity: 0.8;
+      }
+      .search input {
+        background: #1c1c22;
+        border: 1px solid #2b2b34;
+        border-radius: 8px;
+        padding: 12px 18px;
+        color: #fff;
+        font-size: 17px;
+        width: 320px;
+      }
+      .web-row-header__title {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 32px 0 18px;
+      }
+      .web-lane {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+      .web-tile {
+        min-width: 0;
+      }
+      .web-tile__title {
+        display: block;
+        text-decoration: none;
+        color: #fff;
+      }
+      .web-tile__title img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #23232b;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+      }
+      .web-tile__title .tt {
+        display: block;
+        margin-top: 12px;
+        font-size: 19px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="web-header">
+      <span class="logo">tubi</span>
+      <nav aria-label="Primary">
+        <a href="#/browse">Browse</a>
+        <a href="#/movies">Movies</a>
+        <a href="#/tv-shows">TV Shows</a>
+        <a href="#/live">Live TV</a>
+      </nav>
+      <div class="search">
+        <label for="q">Search</label>
+        <input id="q" type="text" aria-label="Search Tubi" placeholder="Search Tubi" />
+      </div>
+    </header>
+
+    <main>
+      <section role="region" aria-label="Trending Now">
+        <h2 class="web-row-header__title">Trending Now</h2>
+        <div class="web-lane">
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/now-you-see-me"
+                ><img src="posters/now-you-see-me.jpg" alt="" /><span class="tt"
+                  >Now You See Me</span
+                ></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/rango"
+                ><img src="posters/rango.jpg" alt="" /><span class="tt">Rango</span></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/shark-tale"
+                ><img src="posters/shark-tale.jpg" alt="" /><span class="tt">Shark Tale</span></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/bad-teacher"
+                ><img src="posters/bad-teacher.png" alt="" /><span class="tt">Bad Teacher</span></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section role="region" aria-label="Popular Movies">
+        <h2 class="web-row-header__title">Popular Movies</h2>
+        <div class="web-lane">
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/transformers"
+                ><img src="posters/transformers.png" alt="" /><span class="tt"
+                  >Transformers</span
+                ></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/megamind"
+                ><img src="posters/megamind.png" alt="" /><span class="tt">Megamind</span></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/dumb-and-dumber"
+                ><img src="posters/dumb-and-dumber.jpg" alt="" /><span class="tt"
+                  >Dumb and Dumber</span
+                ></a
+              >
+            </div>
+          </div>
+          <div class="web-tile">
+            <div class="web-tile__inner">
+              <a class="web-tile__title" href="#/movie/cloudy"
+                ><img src="posters/cloudy-with-a-chance-of-meatballs.jpg" alt="" /><span class="tt"
+                  >Cloudy With a Chance of Meatballs</span
+                ></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

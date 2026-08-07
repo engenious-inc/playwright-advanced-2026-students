@@ -19,3 +19,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+SCOPE
+
+The license above covers the original code, tests, and documentation in this
+repository. It does not cover third-party material bundled for teaching
+purposes — notably the movie poster artwork under tests/m03/fixtures/posters/,
+which remains the property of its respective copyright holders and is not
+redistributable. See NOTICE.
