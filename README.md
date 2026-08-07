@@ -9,13 +9,13 @@ This repo holds the per-module code for a **20-module** course on production-gra
 
 **Cloud (no local setup):**
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/engenious-inc/playwright-advanced-2026)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/engenious-inc/playwright-advanced-2026-students)
 
 **Local:**
 
 ```bash
-git clone https://github.com/engenious-inc/playwright-advanced-2026
-cd playwright-advanced-2026
+git clone https://github.com/engenious-inc/playwright-advanced-2026-students
+cd playwright-advanced-2026-students
 nvm use            # pins Node 22
 npm install
 npx playwright install --with-deps
@@ -121,4 +121,9 @@ npm run juice-shop:down  # stops it
 
 ## License
 
-MIT. See [`LICENSE`](./LICENSE).
+MIT for the code, tests, and docs here — see [`LICENSE`](./LICENSE).
+
+The movie poster artwork under `tests/m03/fixtures/posters/` is **not** covered:
+it belongs to its respective copyright holders and is included only so the
+Module 3 locator fixtures match the real Tubi layout. Replace those files before
+publishing a fork. See [`NOTICE`](./NOTICE).
