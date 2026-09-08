@@ -1,0 +1,7 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "tests/m09/demo/direct-instantiation.spec.ts",
+    "content": "import { test } from '@playwright/test';\nimport { TubiHomePage } from '../../../shared/anchor-helpers/tubi/TubiHomePage.js';\n\ntest('loads home directly, bypassing the fixture', async ({ page }) => {\n  const home = new TubiHomePage(page);\n  await home.goto();\n});\n"
+  }
+}

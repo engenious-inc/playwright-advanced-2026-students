@@ -1,0 +1,7 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "tests/m09/demo/any-type.spec.ts",
+    "content": "import { test, expect } from '../../../shared/fixtures/index.js';\n\nfunction parseResponse(body: any): string {\n  return body.title;\n}\n\ntest('parses the response body', async ({ tubiHome }) => {\n  await tubiHome.goto();\n  expect(parseResponse({ title: 'ok' })).toBe('ok');\n});\n"
+  }
+}

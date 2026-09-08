@@ -1,0 +1,7 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "tests/m09/demo/waits.spec.ts",
+    "content": "import { test, expect } from '../../../shared/fixtures/index.js';\n\ntest('loads the results panel', async ({ tubiHome }) => {\n  await tubiHome.goto();\n  await tubiHome.page.waitForTimeout(2000);\n  await expect(tubiHome.contentTiles.first()).toBeVisible();\n});\n"
+  }
+}

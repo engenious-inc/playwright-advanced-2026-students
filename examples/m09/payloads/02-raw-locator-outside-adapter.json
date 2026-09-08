@@ -1,0 +1,7 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "tests/m09/demo/raw-locator.spec.ts",
+    "content": "import { test, expect } from '../../../shared/fixtures/index.js';\n\ntest('shows the first content tile', async ({ tubiHome, page }) => {\n  await tubiHome.goto();\n  const tile = page.locator('div.web-content-tile').first();\n  await expect(tile).toBeVisible();\n});\n"
+  }
+}

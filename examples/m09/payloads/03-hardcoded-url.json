@@ -1,0 +1,7 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "tests/m09/demo/hardcoded-url.spec.ts",
+    "content": "import { test, expect } from '../../../shared/fixtures/index.js';\n\ntest('navigates to Tubi directly', async ({ page }) => {\n  await page.goto('https://tubitv.com/');\n  await expect(page).toHaveURL(/tubitv\\.com/);\n});\n"
+  }
+}
