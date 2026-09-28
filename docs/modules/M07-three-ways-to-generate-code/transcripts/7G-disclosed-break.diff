@@ -1,0 +1,11 @@
+--- a/shared/anchor-helpers/tubi/TubiHomePage.ts
++++ b/shared/anchor-helpers/tubi/TubiHomePage.ts
+@@ -79,7 +79,7 @@
+    * `getByRole` / href-based locators resolve to non-visible nodes.
+    */
+   get contentTiles(): Locator {
+-    return this.page.locator('div.web-content-tile');
++    return this.page.locator('div.content-tile');
+   }
+ 
+   /**

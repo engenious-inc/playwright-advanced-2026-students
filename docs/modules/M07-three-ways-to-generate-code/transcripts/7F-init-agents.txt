@@ -1,0 +1,7 @@
+$ npx playwright init-agents --loop=claude
+ 🎭 Using project "juice-shop" as a primary project
+ 🤖 .claude/agents/playwright-test-generator.md - agent definition
+ 🤖 .claude/agents/playwright-test-healer.md - agent definition
+ 🤖 .claude/agents/playwright-test-planner.md - agent definition
+ 🔧 .mcp.json - mcp configuration
+ ✅ Done.

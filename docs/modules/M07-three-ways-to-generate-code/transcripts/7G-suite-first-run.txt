@@ -1,0 +1,36 @@
+$ npx playwright test tests/m07/03-test-agents-result.spec.ts --project=chromium --headed --workers=1 --retries=0
+
+Running 4 tests using 1 worker
+
+  -  1 [setup] › tests/auth.setup.ts:9:1 › authenticate juice-shop admin
+  ✓  2 [chromium] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar (3.8s)
+  ✓  3 [chromium] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar (3.1s)
+  ✓  4 [chromium] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar (3.8s)
+
+  1 skipped
+  3 passed (13.2s)
+
+$ npx playwright test tests/m07/03-test-agents-result.spec.ts --project=firefox --headed --workers=1 --retries=0
+
+Running 4 tests using 1 worker
+
+  -  1 [setup] › tests/auth.setup.ts:9:1 › authenticate juice-shop admin
+  ✓  2 [firefox] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar (4.3s)
+  ✓  3 [firefox] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar (3.3s)
+  ✓  4 [firefox] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar (3.7s)
+
+  1 skipped
+  3 passed (14.1s)
+
+$ npx playwright test tests/m07/03-test-agents-result.spec.ts --project=webkit --headed --workers=1 --retries=0
+
+Running 4 tests using 1 worker
+
+  -  1 [setup] › tests/auth.setup.ts:9:1 › authenticate juice-shop admin
+  ✓  2 [webkit] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar (4.4s)
+  ✓  3 [webkit] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar (3.5s)
+  ✓  4 [webkit] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar (4.5s)
+
+  1 skipped
+  3 passed (14.8s)
+

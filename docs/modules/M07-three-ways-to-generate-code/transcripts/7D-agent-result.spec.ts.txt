@@ -1,0 +1,15 @@
+import { test, expect } from '../../shared/fixtures/index.js';
+import { skipInHeadless } from '../../shared/test-guards.js';
+
+test.describe('Tubi Movies page', () => {
+  test('renders at least twelve content tiles', async ({ tubiHome, page }) => {
+    skipInHeadless('Tubi lazy-loaded tiles need headed mode');
+    await tubiHome.goto();
+    await expect(tubiHome.categoryNav).toBeVisible();
+    await tubiHome.browseCategory('Movies');
+    await expect(page).toHaveURL(/\/movies/);
+    await tubiHome.triggerLazyLoad(12);
+    const tileCount = await tubiHome.contentTiles.count();
+    expect(tileCount).toBeGreaterThanOrEqual(12);
+  });
+});

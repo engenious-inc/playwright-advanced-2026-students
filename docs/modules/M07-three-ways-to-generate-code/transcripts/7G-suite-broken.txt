@@ -1,0 +1,105 @@
+$ npx playwright test tests/m07/03-test-agents-result.spec.ts --project=chromium --headed --workers=1 --retries=0
+
+Running 4 tests using 1 worker
+
+  -  1 [setup] › tests/auth.setup.ts:9:1 › authenticate juice-shop admin
+  ✘  2 [chromium] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar (7.7s)
+  ✘  3 [chromium] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar (4.7s)
+  ✘  4 [chromium] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar (13.9s)
+
+
+  1) [chromium] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByRole('menuitem', { name: 'Browse' })
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" with timeout 5000ms
+      - waiting for getByRole('menuitem', { name: 'Browse' })
+        14 × locator resolved to <button role="menuitem" class="XVtXO qmpj2" aria-label="Browse" aria-haspopup="true" aria-expanded="false">…</button>
+           - unexpected value "false"
+
+
+      28 |     await tubiHome.browseMenuItem('Browse');
+      29 |
+    > 30 |     await expect(tubiHome.browseMenuTrigger).toHaveAttribute('aria-expanded', 'true');
+         |                                              ^
+      31 |     await expect(tubiHome.browseCategoriesMenu).toBeVisible();
+      32 |     await expect(tubiHome.browseCategoriesMenu.getByRole('menuitem').first()).toBeVisible();
+      33 |   },
+        at tests/m07/03-test-agents-result.spec.ts:30:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--2f399--opens-from-the-top-menubar-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--2f399--opens-from-the-top-menubar-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/m07-03-test-agents-result--2f399--opens-from-the-top-menubar-chromium/error-context.md
+
+  2) [chromium] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar 
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 12
+    Received:    0
+
+      46 |     await expect(page).toHaveURL(/\/movies/);
+      47 |     await tubiHome.waitForCarouselsLoaded();
+    > 48 |     expect(await tubiHome.contentTiles.count()).toBeGreaterThanOrEqual(12);
+         |                                                 ^
+      49 |   },
+      50 | );
+      51 |
+        at tests/m07/03-test-agents-result.spec.ts:48:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--03dc7-menubar-shows-content-tiles-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--03dc7-menubar-shows-content-tiles-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/m07-03-test-agents-result--03dc7-menubar-shows-content-tiles-chromium/error-context.md
+
+  3) [chromium] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar 
+
+    TimeoutError: locator.scrollIntoViewIfNeeded: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('div.content-tile').filter({ has: locator('a[href^="/movies/"]') }).first()
+
+
+       at ../shared/anchor-helpers/tubi/TubiHomePage.ts:157
+
+      155 |       .filter({ has: this.page.locator('a[href^="/movies/"]') })
+      156 |       .first();
+    > 157 |     await tile.scrollIntoViewIfNeeded();
+          |                ^
+      158 |     // Title anchors inside tiles are often `visibility:hidden`; Playwright rejects
+      159 |     // forced clicks on non-visible nodes, so trigger the native anchor click in-DOM.
+      160 |     await tile.evaluate((element) => {
+        at TubiHomePage.openFirstContentTile (shared/anchor-helpers/tubi/TubiHomePage.ts:157:16)
+        at tests/m07/03-test-agents-result.spec.ts:63:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--c2713-es-page-opens-a-detail-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/m07-03-test-agents-result--c2713-es-page-opens-a-detail-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/m07-03-test-agents-result--c2713-es-page-opens-a-detail-page-chromium/error-context.md
+
+  3 failed
+    [chromium] › tests/m07/03-test-agents-result.spec.ts:21:1 › Browse menu opens from the top menubar @desktop-menubar 
+    [chromium] › tests/m07/03-test-agents-result.spec.ts:36:1 › Movies page reached from the menubar shows content tiles @desktop-menubar 
+    [chromium] › tests/m07/03-test-agents-result.spec.ts:52:1 › Clicking a tile on the Movies page opens a detail page @desktop-menubar 
+  1 skipped

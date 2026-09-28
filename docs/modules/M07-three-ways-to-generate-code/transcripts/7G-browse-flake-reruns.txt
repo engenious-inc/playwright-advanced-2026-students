@@ -1,0 +1,18 @@
+$ npx playwright test tests/m07/03-test-agents-result.spec.ts -g "Browse menu opens" --project=chromium --headed --workers=1 --retries=0 --repeat-each=10
+
+Running 11 tests using 1 worker
+
+  -   1 [setup] › tests/auth.setup.ts:9:1 › authenticate juice-shop admin
+  ✓   2 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (4.9s)
+  ✓   3 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (4.1s)
+  ✓   4 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.9s)
+  ✓   5 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.5s)
+  ✓   6 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.2s)
+  ✓   7 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.5s)
+  ✓   8 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.2s)
+  ✓   9 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.9s)
+  ✓  10 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.5s)
+  ✓  11 [chromium] › tests/m07/03-test-agents-result.spec.ts:25:1 › Browse menu opens from the top menubar @desktop-menubar (3.7s)
+
+  1 skipped
+  10 passed (50.1s)

@@ -1,0 +1,119 @@
+$ npx playwright-cli close
+Browser 'default' closed
+
+
+$ npx playwright-cli open https://tubitv.com/
+### Browser `default` opened with pid 89795.
+### Ran Playwright code
+```js
+await page.goto('https://tubitv.com/');
+```
+### Page
+- Page URL: https://tubitv.com/
+- Page Title: Watch Free Movies and TV Shows Online | Tubi
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-09-22T18-43-03-834Z.yml)
+### Events
+- New console entries: .playwright-cli/console-2026-09-22T18-43-01-939Z.log#L1
+
+$ npx playwright-cli find Movies
+### Result
+Found 7 matches for "Movies":
+
+- generic [ref=e986]:
+  - navigation [ref=e987]:
+    - generic [ref=e988]:
+      - generic [ref=e989]:
+        - link "Tubi logo" [ref=e990] [cursor=pointer]:
+          ...
+          - img "Tubi logo" [ref=e991]
+        - menubar [ref=e993]:
+          - menuitem "Browse" [ref=e994] [cursor=pointer]
+          - menuitem "Movies" [ref=e998] [cursor=pointer]:
+            - link [aria-hidden] [ref=e999]:
+              - /url: /movies
+              - text: Movies
+          - menuitem "TV Shows" [ref=e1000] [cursor=pointer]:
+            - link [aria-hidden] [ref=e1001]:
+              - /url: /tv-shows
+
+----
+
+- generic [ref=e986]:
+  - main [ref=e1030]:
+    - generic [ref=e1031]:
+      - generic [ref=e1868]:
+        - generic [ref=e1891]:
+          - list [ref=e1926]:
+            - listitem [ref=e1927]: GET THE APPS
+            - listitem [ref=e1928]:
+              - link "iOS" [ref=e1929] [cursor=pointer]:
+                - /url: https://itunes.apple.com/app/tubi-tv-watch-free-movies/id886445756?mt=8
+            - listitem [ref=e1930]:
+              - link "Android" [ref=e1931] [cursor=pointer]:
+                - /url: https://play.google.com/store/apps/details?id=com.tubitv
+            - listitem [ref=e1932]:
+              - link "Roku" [ref=e1933] [cursor=pointer]:
+                - /url: https://channelstore.roku.com/details/e405326bbd55d32d7f414fcbe8cf0279:bfc94686ac33aeae351a0a692a770bae/tubi-free-movies-and-tv
+            - listitem [ref=e1934]:
+              - link "Amazon Fire" [ref=e1935] [cursor=pointer]:
+                - /url: https://www.amazon.com/Tubi-Inc-Free-Movies-TV/dp/B075NTHVJW
+          - list [ref=e1937]:
+            - listitem [ref=e1938]: PRESS
+            - listitem [ref=e1939]:
+
+----
+
+- generic [ref=e986]:
+  - main [ref=e1030]:
+    - generic [ref=e1031]:
+      - generic [ref=e1868]:
+        - generic [ref=e1954]:
+          - generic [ref=e1955]:
+            - link:
+              - /url: https://itunes.apple.com/app/tubi-tv-watch-free-movies/id886445756?mt=8
+            - link:
+              - /url: https://play.google.com/store/apps/details?id=com.tubitv
+            - link:
+### Page
+- Page URL: https://tubitv.com/
+- Page Title: Watch Free Movies and TV Shows Online | Tubi
+- Console: 17 errors, 1 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-09-22T18-43-01-939Z.log#L2-L19
+
+$ npx playwright-cli click e998
+### Ran Playwright code
+```js
+await page.getByRole('menuitem', { name: 'Movies' }).click();
+```
+### Page
+- Page URL: https://tubitv.com/movies
+- Page Title: Watch Free Movies Online | Tubi TV
+- Console: 27 errors, 2 warnings
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-09-22T18-43-19-820Z.yml)
+### Events
+- New console entries: .playwright-cli/console-2026-09-22T18-43-01-939Z.log#L20-L30
+
+$ npx playwright-cli eval () => ({ url: location.pathname, tiles: document.querySelectorAll('div.web-content-tile').length })
+### Result
+{
+  "url": "/movies",
+  "tiles": 90
+}
+### Ran Playwright code
+```js
+await page.evaluate('() => ({ url: location.pathname, tiles: document.querySelectorAll(\'div.web-content-tile\').length })');
+```
+### Page
+- Page URL: https://tubitv.com/movies
+- Page Title: Watch Free Movies Online | Tubi TV
+- Console: 28 errors, 2 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-09-22T18-43-01-939Z.log#L31
+
+$ npx playwright-cli close
+Browser 'default' closed
+
+

@@ -18,11 +18,6 @@
 import { test, expect } from '../../shared/fixtures/index.js';
 import { skipInHeadless, skipOnMobile } from '../../shared/test-guards.js';
 
-// Known flake, kept on purpose: on 2026-09-24 this test failed once in its first 8 runs
-// (`aria-expanded` still "false" after the click — transcripts/7G-suite-broken.txt), then passed
-// 10 of 10 recorded reruns on 2026-09-25 (transcripts/7G-browse-flake-reruns.txt). Rare, not gone.
-// The healer's run passed it and reported green; 7.G teaches that "green is not the same as
-// correct", and M08 picks the flake up. Paths are under docs/modules/M07-three-ways-to-generate-code/.
 test(
   'Browse menu opens from the top menubar',
   { tag: '@desktop-menubar' },

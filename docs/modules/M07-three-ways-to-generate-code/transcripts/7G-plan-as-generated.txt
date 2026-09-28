@@ -35,7 +35,7 @@
 
 ## Suggested additions
 
-- **Browse dropdown sub-tab switching** (Hubs / Popular / Genres / Collections / Networks) — verified these tabs exist and "Hubs" is active by default, but switching tabs and asserting the resulting category-item change was not explored. Out of the requested scope (menu _opening_ only).
+- **Browse dropdown sub-tab switching** (Hubs / Popular / Genres / Collections / Networks) — verified these tabs exist and "Hubs" is active by default, but switching tabs and asserting the resulting category-item change was not explored. Out of the requested scope (menu *opening* only).
 - **"All Categories" link inside the open Browse dropdown** — present (`menuitem "All Categories"`) but its destination page was not explored.
 - **Playing a title from the Movies detail page** — the detail page exposes a "Play" affordance, but the prompt only asked that a tile click "opens a detail page," not that playback starts; testing playback would also pull in `TubiPlayerPage` and extra WAF-sensitive network requests.
 - **"You May Also Like" related-tiles carousel on the detail page** — present and populated, but not requested.

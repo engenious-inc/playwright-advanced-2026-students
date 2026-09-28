@@ -1,0 +1,23 @@
+--- a/shared/anchor-helpers/tubi/TubiHomePage.ts
++++ b/shared/anchor-helpers/tubi/TubiHomePage.ts
+@@ -112,10 +112,17 @@
+     await input.press('Enter');
+   }
+ 
+-  /** Click a category link in the main nav by visible name (case-insensitive). */
++  /**
++   * Click a category item in the main nav by visible name (case-insensitive).
++   *
++   * Raw role override (rule 4 exception): each nav item's `<a href>` carries
++   * `aria-hidden="true"` and `tabindex="-1"`; the accessible node is the wrapping
++   * `<button role="menuitem" aria-label="...">`. `getByRole('link', ...)` matches
++   * nothing, so this targets the menuitem instead.
++   */
+   async browseCategory(name: string): Promise<void> {
+-    const link = this.categoryNav.getByRole('link', { name: new RegExp(name, 'i') });
+-    await link.click();
++    const item = this.categoryNav.getByRole('menuitem', { name: new RegExp(name, 'i') });
++    await item.click();
+   }
+ 
+   /**

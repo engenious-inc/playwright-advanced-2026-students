@@ -112,12 +112,6 @@ export class TubiHomePage extends BasePage {
     await input.press('Enter');
   }
 
-  /** Click a category link in the main nav by visible name (case-insensitive). */
-  async browseCategory(name: string): Promise<void> {
-    const link = this.categoryNav.getByRole('link', { name: new RegExp(name, 'i') });
-    await link.click();
-  }
-
   /**
    * Click a top-level menubar item (Browse / Movies / TV Shows / Live TV).
    * Added in M07 lecture 7.D — the menubar is distinct from the category nav;
@@ -131,9 +125,27 @@ export class TubiHomePage extends BasePage {
     await item.click({ timeout: 15_000 });
   }
 
+  /** The "Browse" menubar item itself — asserted for expanded state, not clicked (use browseMenuItem for that). */
+  get browseMenuTrigger(): Locator {
+    return this.page.getByRole('menuitem', { name: 'Browse' });
+  }
+
+  /** The "Browse Categories" submenu revealed when the Browse menubar item expands. */
+  get browseCategoriesMenu(): Locator {
+    return this.page.getByRole('menubar', { name: 'Browse Categories' });
+  }
+
+  /**
+   * Level-1 heading on a title detail page (e.g. /movies/:id), rendered immediately
+   * after openFirstContentTile() resolves. Generic across content types.
+   */
+  get detailTitleHeading(): Locator {
+    return this.page.getByRole('heading', { level: 1 });
+  }
+
   /**
    * Trigger lazy-loaded content on long-scroll pages.
-   * Added in M07 lecture 7.F — the original Test Agents healer wanted to add a
+   * Added in M07 lecture 7.G — the original Test Agents healer wanted to add a
    * `waitForTimeout` directly in the test; the correct fix routed the wait into
    * the adapter so every consuming test gets it for free.
    *
