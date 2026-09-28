@@ -22,6 +22,11 @@ Branches below are **placeholders kept fast-forwarded to `main`** until each mod
 | `m19-component-testing`         | M19 — Component testing           | Placeholder → `main`                                                                                   |
 | `m20-testing-ai`                | M20 — Testing AI features         | **Diverged** — ported lab content (`d722000`); typed stubs on `main`                                   |
 
+> **M07 resync 2026-09-28.** The produced M07 lab was mirrored to the student repo (`1ed7ec4`):
+> the `tests/m07` specs, the Test Agents plan files, the Tubi adapter, the cost doc, the M07
+> transcripts, and `@playwright/cli` + Playwright 1.62.1. `m07-three-ways` (0 commits of its own)
+> was fast-forwarded to it. `audit:students` now counts M07 as shipped: 0 cited paths missing.
+
 > **Audit + resync 2026-08-06.** Verified against `engenious-inc/playwright-advanced-2026-students`,
 > then fixed. **All eleven branches are now level with `main`** (0 ahead of it in content, 0 behind).
 >
@@ -44,9 +49,9 @@ Branches below are **placeholders kept fast-forwarded to `main`** until each mod
 
 ## M16 capstone tags
 
-| Tag               | Purpose                               | Status                                                                                                                                   |
-| ----------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `m16-messy-start` | Deliberately tangled Juice Shop suite | **Shipped 2026-08-06** — branch `m16-capstone`. All ten smells from the walkthrough, runnable: 5 passed / 14.9s against a live container |
-| `m16-clean-end`   | Post-refactor destination             | **Shipped 2026-08-06** — branch `m16-capstone`. Same 5 tests, 3.5s, zero lint suppressions, running in the `juice-shop` CI project       |
+| Tag               | Purpose                               | Status                                                                                                                                        |
+| ----------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `m16-messy-start` | Deliberately tangled Juice Shop suite | **Shipped 2026-08-06** — `m16-capstone` @ `f43d7a5`. All ten smells from the walkthrough, runnable: 5 passed / 14.9s against a live container |
+| `m16-clean-end`   | Post-refactor destination             | **Shipped 2026-08-06** — `m16-capstone` @ `79d96f1`. Same 5 tests, 3.5s, zero lint suppressions, running in the `juice-shop` CI project       |
 
 Diff walkthrough: `docs/m16-refactor-walkthrough.md`.
