@@ -25,6 +25,13 @@ export const MockTubi = {
   postersPattern: '**/posters/*',
 } as const;
 
+/** The three rows the Essentials shell renders. E04's fixture installs these. */
+export const MOCK_SHELL_CATEGORIES: Category[] = [
+  { id: 1, name: 'Free Movies', slug: 'free-movies' },
+  { id: 2, name: 'Comedy', slug: 'comedy' },
+  { id: 3, name: 'Documentaries', slug: 'documentaries' },
+];
+
 const shellHtml = readFileSync(
   fileURLToPath(new URL('../../../tests/m04/fixtures/tubi-home-shell.html', import.meta.url)),
   'utf-8',

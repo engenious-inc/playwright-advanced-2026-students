@@ -5,6 +5,12 @@
 
 This repo holds the per-module code for a **20-module** course on production-grade Playwright in 2026 — agentic test workflows, modern network capabilities, no-DOM surfaces, and the tiered AI testing architecture that survives real production. **16 core modules** plus **4 advanced extensions** (M17 Performance, M18 Synthetic monitoring, M19 Component testing, M20 Testing AI & LLM features).
 
+Essentials (E01–E04) is the track before Module 1. Its tests live in `tests/e01` through `tests/e04` and run against the mocked Tubi shell, not the live site:
+
+```bash
+npx playwright test tests/e01 tests/e02 tests/e03 tests/e04
+```
+
 ## Quick start
 
 **Cloud (no local setup):**
@@ -70,6 +76,7 @@ npx playwright test tests/m07 tests/m12 --headed --project=chromium --workers=1
 
 | Track                   | Modules   | What it teaches                                                                                                   |
 | ----------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Essentials**          | E01 – E04 | Setup, a first test, locators and actions, page objects and fixtures                                              |
 | **Foundations**         | M01 – M03 | The 2026 stack, project setup, locator strategies                                                                 |
 | **Network**             | M04 – M06 | `page.route`, HAR replay, WebSocket, report-gen, contract testing                                                 |
 | **Agentic**             | M07 – M10 | Four ways to generate code (+ cost model), Test Agents, instruction files, custom MCP server                      |
