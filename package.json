@@ -16,7 +16,7 @@
     "trace": "playwright show-trace",
     "codegen": "playwright codegen",
     "agents:init": "playwright init-agents --loop=claude",
-    "lint": "eslint . --max-warnings=0 --ignore-pattern 'tests/m09/demo-bad.spec.ts'",
+    "lint": "eslint . --max-warnings=0 --ignore-pattern tests/m09/demo-bad.spec.ts",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

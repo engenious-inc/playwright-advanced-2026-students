@@ -42,7 +42,8 @@ step(3, 3, 'Running the generated Tubi test (chromium)');
 const result = spawnSync(
   'npx',
   ['playwright', 'test', 'tests/brag/', '--project=chromium', '--reporter=list'],
-  { stdio: 'inherit', cwd: ROOT },
+  // On Windows `npx` is `npx.cmd`, which spawnSync can only launch through a shell.
+  { stdio: 'inherit', cwd: ROOT, shell: process.platform === 'win32' },
 );
 
 const reportHint = existsSync(resolve(ROOT, 'playwright-report'))
@@ -61,6 +62,9 @@ if (result.status === 0) {
   );
 } else {
   console.info(`\n${red('The demo test did not pass.')}`);
+  if (result.error) {
+    console.info(red(`   Could not launch Playwright: ${result.error.message}`));
+  }
   console.info(
     dim(
       '   Tubi is a real production site — if it is unreachable or rate-limiting, re-run in a moment.',
