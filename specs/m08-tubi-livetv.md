@@ -23,11 +23,13 @@
 **Starting state:** fresh session at `https://tubitv.com/`.
 
 **Steps**
+
 1. Load the home page with `tubiHome.goto()`.
 2. In the header menubar, activate the `Live TV` menu item (`TubiHomePage.browseMenuItem('Live TV')`, which resolves `getByRole('menuitem', { name: /Live TV/i })`).
 3. Wait for the Live TV page to load.
 
 **Expected outcomes**
+
 - URL path is `/live`.
 - Page title matches `/Watch Free Live TV, Movies and TV Shows Online \| Tubi/i`.
 - A level-1 heading with text `Live TV` is visible.
@@ -46,11 +48,13 @@
 **Starting state:** fresh session, navigated to `/live` (via `tubiLiveTv.goto()`).
 
 **Steps**
+
 1. Load the Live TV page with `tubiLiveTv.goto()`.
 2. Wait for the guide to render (`tubiLiveTv.waitForChannelGuideLoaded()` is NOT reliable on production; see the note under Notes for the generator).
 3. Inspect the guide region.
 
 **Expected outcomes**
+
 - A tablist named `Filter options` is visible.
 - The first filter tab (`Featured`) is selected.
 - The filter tablist contains more than one tab (observed: 27 tabs, including `Recommended`, `Sports On Now`, `Local News`, `Weather`).
@@ -70,12 +74,14 @@
 **Starting state:** fresh session, navigated to `/live`, guide rendered (Scenario 2 preconditions).
 
 **Steps**
+
 1. Load the Live TV page with `tubiLiveTv.goto()`.
 2. Note the current `src` of the `<video>` element on the page.
 3. Click the first program tile whose accessible name starts with `Select to view` (`div[role="button"]` in the guide grid).
 4. Wait up to 5 seconds.
 
 **Expected outcomes**
+
 - The URL is still `/live` (observed: no `/live/<id>` route exists on production; the prior draft's `/live/\d+` expectation did not match).
 - The `<video>` element's `currentSrc` changes to a new `blob:` URL.
 - The `<video>` element is visible and has `readyState` of at least 2 (HAVE_CURRENT_DATA) within the wait.
