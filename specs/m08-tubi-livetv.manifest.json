@@ -11,8 +11,14 @@
       "name": "TubiLiveTvPage",
       "path": "/live",
       "locators": {
-        "categoryNav": { "role": "navigation", "name": "Categories" },
-        "channelRows": { "testId": "channel-list-item" },
+        "menubar": {
+          "role": "menubar",
+          "note": "production home and Live TV pages use a menubar; Live TV is a menuitem inside it (checked 2026-10-21)"
+        },
+        "channelRows": {
+          "css": ".web-epg-row__logo[role=\"button\"]",
+          "note": "production has no data-testid here; the row logo button has a stable class (checked 2026-10-21)"
+        },
         "player": {
           "css": "video",
           "note": "no semantic role; the video element is the player surface"
@@ -23,7 +29,7 @@
           "name": "openLiveTv",
           "params": [],
           "step": "open Live TV from the home menubar",
-          "body": "await this.categoryNav().getByText('Live TV').click();"
+          "body": "await this.menubar().getByRole('menuitem', { name: 'Live TV' }).click();"
         },
         {
           "name": "openChannel",
@@ -43,11 +49,11 @@
       "owner": "live-experience",
       "layer": "ui",
       "ciTier": "smoke",
-      "evidence": "URL matches /live and the category nav stays visible",
+      "evidence": "URL matches /live and the menubar stays visible",
       "steps": [{ "step": 1, "action": "openLiveTv" }],
       "assert": [
         { "kind": "url", "urlRegex": "/live" },
-        { "kind": "visible", "locator": "categoryNav" }
+        { "kind": "visible", "locator": "menubar" }
       ]
     },
     {
@@ -72,13 +78,13 @@
       "owner": "playback",
       "layer": "ui",
       "ciTier": "smoke",
-      "evidence": "URL matches /live/<id> and the video element is visible",
+      "evidence": "URL stays on /live (playback swaps in place) and the video element is visible",
       "steps": [
         { "step": 1, "action": "openLiveTv" },
         { "step": 2, "action": "openChannel", "args": [0] }
       ],
       "assert": [
-        { "kind": "url", "urlRegex": "/live/\\d+" },
+        { "kind": "url", "urlRegex": "/live" },
         { "kind": "visible", "locator": "player" }
       ]
     }

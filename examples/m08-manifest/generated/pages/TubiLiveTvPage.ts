@@ -7,12 +7,13 @@ import { BasePage } from '../../../../shared/BasePage.js';
 export class TubiLiveTvPage extends BasePage {
   readonly path = '/live';
 
-  categoryNav(): Locator {
-    return this.page.getByRole('navigation', { name: 'Categories' });
+  menubar(): Locator {
+    return this.page.getByRole('menubar');
   }
 
   channelRows(): Locator {
-    return this.page.getByTestId('channel-list-item');
+    // production has no data-testid here; the row logo button has a stable class (checked 2026-10-21)
+    return this.page.locator('.web-epg-row__logo[role="button"]');
   }
 
   player(): Locator {
@@ -22,7 +23,7 @@ export class TubiLiveTvPage extends BasePage {
 
   async openLiveTv(): Promise<void> {
     // step: open Live TV from the home menubar
-    await this.categoryNav().getByText('Live TV').click();
+    await this.menubar().getByRole('menuitem', { name: 'Live TV' }).click();
   }
 
   async openChannel(index: number): Promise<void> {

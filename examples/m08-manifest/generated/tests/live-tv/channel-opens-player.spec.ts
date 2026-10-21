@@ -13,7 +13,7 @@ test('Clicking a channel opens the player', async ({ page, tubiLiveTv }) => {
   await tubiLiveTv.openLiveTv();
   // step 2: click the channel row at the given index
   await tubiLiveTv.openChannel(0);
-  // evidence: URL matches /live/<id> and the video element is visible
-  await expect(page).toHaveURL(/\/live\/\d+/);
+  // evidence: URL stays on /live (playback swaps in place) and the video element is visible
+  await expect(page).toHaveURL(/\/live/);
   await expect(tubiLiveTv.player()).toBeVisible();
 });

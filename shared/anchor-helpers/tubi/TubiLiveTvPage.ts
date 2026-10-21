@@ -21,9 +21,12 @@ export class TubiLiveTvPage extends BasePage {
     await this.waitForReady();
   }
 
-  /** Channel rows in the Live TV guide (verified during M08 demo capture). */
+  /**
+   * Channel rows in the Live TV guide. Production has no data-testid on these; each row's
+   * logo button carries the stable class web-epg-row__logo (checked live 2026-10-21, 210 rows).
+   */
   get channelRows(): Locator {
-    return this.page.getByTestId('channel-list-item');
+    return this.page.locator('.web-epg-row__logo[role="button"]');
   }
 
   /** Wait until at least one channel row is visible — routes timing into the adapter. */
