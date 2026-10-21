@@ -11,7 +11,7 @@ test('Live TV is reachable from the home page', async ({ page, tubiLiveTv }) => 
   await tubiLiveTv.goto();
   // step 1: open Live TV from the home menubar
   await tubiLiveTv.openLiveTv();
-  // evidence: URL matches /live and the category nav stays visible
+  // evidence: URL matches /live and the menubar stays visible
   await expect(page).toHaveURL(/\/live/);
-  await expect(tubiLiveTv.categoryNav()).toBeVisible();
+  await expect(tubiLiveTv.menubar()).toBeVisible();
 });

@@ -29,7 +29,10 @@ test.describe('Tubi Live TV @tubi-live', () => {
     await tubiLiveTv.goto();
     await tubiLiveTv.waitForChannelGuideLoaded();
     await tubiLiveTv.channelRows.first().click();
-    await expect(page).toHaveURL(/\/live\/\d+/);
+    // Playback swaps in place: the URL stays /live, the <video> source becomes a blob URL.
     await expect(page.locator('video')).toBeVisible({ timeout: 15_000 });
+    await expect
+      .poll(() => page.locator('video').evaluate((video) => (video as HTMLVideoElement).currentSrc))
+      .toMatch(/^blob:/);
   });
 });
