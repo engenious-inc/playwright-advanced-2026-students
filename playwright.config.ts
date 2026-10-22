@@ -27,7 +27,7 @@ export default defineConfig({
   use: {
     actionTimeout: 10_000,
     navigationTimeout: 30_000,
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     // Some production sites (Tubi included) serve a stripped layout when the User-Agent
