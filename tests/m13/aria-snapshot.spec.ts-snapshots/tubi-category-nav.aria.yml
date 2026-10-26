@@ -1,30 +1,9 @@
-- navigation:
-    - link "Tubi logo":
-        - /url: /
-        - img "Tubi logo"
-    - menubar:
-        - menuitem "Browse"
-        - menuitem "Movies"
-        - menuitem "TV Shows"
-        - menuitem "Live TV"
-        - menuitem "Español"
-        - menuitem "Tubi Kids"
-    - button "Open help menu"
-    - text: Language English
-    - img "Arrowhead Down Icon"
-    - link "Help Center":
-        - /url: /help-center
-    - link "Terms of Use":
-        - /url: /static/terms
-    - link "Privacy Policy":
-        - /url: /static/privacy
-    - link "Contact Support":
-        - /url: /static/support
-    - img
-    - text: Now you can change your default language
-    - link "Sign In":
-        - /url: /login
-    - link "Register":
-        - /url: /signup
-    - link "Search":
-        - /url: /search
+- navigation "Primary":
+    - link "Browse":
+        - /url: '#/browse'
+    - link "Movies":
+        - /url: '#/movies'
+    - link "TV Shows":
+        - /url: '#/tv-shows'
+    - link "Live TV":
+        - /url: '#/live'

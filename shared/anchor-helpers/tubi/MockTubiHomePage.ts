@@ -19,6 +19,10 @@ export class MockTubiHomePage extends BasePage {
     return this.page.getByRole('textbox', { name: 'Search Tubi' });
   }
 
+  get categoryNav(): Locator {
+    return this.page.getByRole('navigation').first();
+  }
+
   get moviesLink(): Locator {
     return this.page.getByRole('link', { name: 'Movies', exact: true });
   }
