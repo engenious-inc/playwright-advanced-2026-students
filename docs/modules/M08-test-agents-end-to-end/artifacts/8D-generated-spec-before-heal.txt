@@ -1,0 +1,97 @@
+// spec: specs/m08-tubi-livetv.md
+// seed: tests/seed.spec.ts
+
+import { test, expect } from '../../shared/fixtures/index.js';
+import { skipInHeadless, skipOnMobile } from '../../shared/test-guards.js';
+
+test.describe('Tubi Live TV', () => {
+  test('live-tv-is-reachable-from-the-home-page', async ({ tubiHome, page }) => {
+    skipOnMobile('Live TV menubar navigation is desktop-only');
+    skipInHeadless('Tubi Live TV layout needs headed mode');
+
+    // 1. Load the home page with tubiHome.goto()
+    await tubiHome.goto();
+
+    // 2. In the header menubar, activate the Live TV menu item
+    await tubiHome.browseMenuItem('Live TV');
+
+    // 3. Wait for the Live TV page to load
+    await expect(page).toHaveURL(/\/live\/?$/, { timeout: 30_000 });
+
+    // Expected: title matches the Live TV pattern
+    await expect(page).toHaveTitle(/Watch Free Live TV, Movies and TV Shows Online \| Tubi/i);
+
+    // Expected: level-1 heading "Live TV" is visible
+    await expect(page.getByRole('heading', { level: 1, name: 'Live TV' })).toBeVisible();
+
+    // Expected: header menubar is still visible
+    await expect(page.getByRole('menubar').first()).toBeVisible();
+  });
+
+  test('channel-guide-shows-filters-time-header-and-program-tiles', async ({ tubiLiveTv, page }) => {
+    skipInHeadless('Tubi Live TV channel guide needs headed mode');
+
+    // 1. Load the Live TV page with tubiLiveTv.goto()
+    await tubiLiveTv.goto();
+
+    // 2. Wait for the guide to render (tubiLiveTv.waitForChannelGuideLoaded() is not used:
+    //    it waits on data-testid="channel-list-item", which production does not expose)
+    const filters = page.getByRole('tablist', { name: 'Filter options' });
+    await expect(filters).toBeVisible({ timeout: 30_000 });
+
+    // 3. Inspect the guide region
+
+    // Expected: the Featured filter tab is selected
+    await expect(filters.getByRole('tab', { name: 'Featured', selected: true })).toBeVisible();
+
+    // Expected: the filter tablist contains more than one tab
+    await expect(filters.getByRole('tab').nth(1)).toBeVisible();
+
+    // Expected: a row of half-hour time labels is visible in the guide
+    await expect(page.getByText(/^\d{1,2}:(00|30) (AM|PM)$/).first()).toBeVisible();
+
+    // Expected: at least one program tile is visible in the guide grid
+    await expect(page.getByRole('button', { name: /^Select to view/ }).first()).toBeVisible();
+  });
+
+  test('clicking-a-program-in-the-guide-starts-playback', async ({ tubiLiveTv, page }) => {
+    skipInHeadless('Tubi Live TV player flow needs headed mode');
+
+    // 1. Load the Live TV page with tubiLiveTv.goto()
+    await tubiLiveTv.goto();
+
+    // 2. Note the current src of the video element on the page
+    // Raw tag selector: the video element has no ARIA role or accessible name to target.
+    const video = page.locator('video');
+    const initialSrc = await video.evaluate((element) => element.currentSrc);
+
+    // 3. Click the first program tile whose accessible name starts with "Select to view"
+    const tile = page.getByRole('button', { name: /^Select to view/ }).first();
+    await expect(tile).toBeVisible({ timeout: 30_000 });
+    await tile.click();
+
+    // 4. Wait up to 5 seconds for the video source to change
+    await expect
+      .poll(async () => video.evaluate((element) => element.currentSrc), { timeout: 5_000 })
+      .not.toBe(initialSrc);
+
+    // Expected: the URL is still /live
+    await expect(page).toHaveURL(/\/live\/?$/);
+
+    // Expected: the new video source is a blob: URL
+    await expect
+      .poll(async () => video.evaluate((element) => element.currentSrc), { timeout: 5_000 })
+      .toMatch(/^blob:/);
+
+    // Expected: the video element is visible
+    await expect(video).toBeVisible();
+
+    // Expected: the video has readyState of at least 2 (HAVE_CURRENT_DATA)
+    await expect
+      .poll(async () => video.evaluate((element) => element.readyState), { timeout: 5_000 })
+      .toBeGreaterThanOrEqual(2);
+
+    // Expected: no dialog appears
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+});

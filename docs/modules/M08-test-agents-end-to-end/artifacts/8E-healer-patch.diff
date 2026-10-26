@@ -1,0 +1,12 @@
+--- docs/modules/M08-test-agents-end-to-end/artifacts/8D-generated-spec-before-heal.txt	2026-10-21 11:48:25
++++ docs/modules/M08-test-agents-end-to-end/artifacts/8D-generated-spec.txt	2026-10-21 11:48:25
+@@ -42,7 +42,8 @@
+     // 3. Inspect the guide region
+ 
+     // Expected: the Featured filter tab is selected
+-    await expect(filters.getByRole('tab', { name: 'Featured', selected: true })).toBeVisible();
++    // The tab's accessible name is the unrendered template "{categoryName} filter", so match its visible text instead.
++    await expect(filters.getByRole('tab', { selected: true }).filter({ hasText: 'Featured' })).toBeVisible();
+ 
+     // Expected: the filter tablist contains more than one tab
+     await expect(filters.getByRole('tab').nth(1)).toBeVisible();
