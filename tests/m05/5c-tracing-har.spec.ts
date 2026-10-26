@@ -10,6 +10,9 @@ import {
 // produces a real trace.zip AND a real captured.har from the SAME run — not two narrated artifacts
 // that were never actually generated together.
 
+// This test starts tracing itself; opt out of the config-level retain-on-failure trace.
+test.use({ trace: 'off' });
+
 test('5.C: tracing.start + tracing.startHar together produce a real trace.zip and a real captured.har', async ({
   context,
   page,

@@ -1,6 +1,9 @@
 import { test, expect } from '../../shared/fixtures/index.js';
 import { mockWebSocketLesson } from '../../shared/anchor-helpers/m06/mock-endpoints.js';
 
+// This test starts tracing itself; opt out of the config-level retain-on-failure trace.
+test.use({ trace: 'off' });
+
 test.describe('M06 route precedence', () => {
   test('websocket route, HTTP route, trace, and HAR capture coexist', async ({ page, context }) => {
     await context.tracing.start({ snapshots: true });
