@@ -9,8 +9,7 @@
         - menuitem "Live TV"
         - menuitem "Español"
         - menuitem "Tubi Kids"
-        - menuitem "FIFA World Cup™ FOX Hub"
-    - img "Help Icon"
+    - button "Open help menu"
     - text: Language English
     - img "Arrowhead Down Icon"
     - link "Help Center":
@@ -27,6 +26,5 @@
         - /url: /login
     - link "Register":
         - /url: /signup
-    - link:
+    - link "Search":
         - /url: /search
-        - img
