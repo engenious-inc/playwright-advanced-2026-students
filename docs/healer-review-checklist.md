@@ -50,7 +50,7 @@ Assertion changes belong in the test _only if the test's intent has genuinely ch
 
 **Scenario:** Hero banner test fails because Tubi's banner image is blocked. Element is in DOM but not visible.
 
-**Healer's proposed patch:**
+**Candidate patch** (the healer declined this edit in three pre-runs; it is tested here, not merged):
 
 ```diff
 -await expect(tubiHome.heroBanner).toBeVisible();
@@ -62,7 +62,7 @@ Assertion changes belong in the test _only if the test's intent has genuinely ch
 | #   | Question                                    | Answer                                                                                                                                                                 | Verdict |
 | --- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | 1   | Same user-facing behavior?                  | No — `toBeAttached` accepts an invisible element, `toBeVisible` doesn't.                                                                                               | REJECT  |
-| 2   | Patched test passes against the regression? | Yes — element is in DOM, so `toBeAttached` returns true even though the page is broken.                                                                                | REJECT  |
+| 2   | Patched test passes against the regression? | Yes (verified) — the patched test passes in all four projects with the banner image blocked.                                                                           | REJECT  |
 | 3   | Assertion or locator change?                | Assertion change. Investigate.                                                                                                                                         | REJECT  |
 | 4   | Fix in the right place?                     | No — the fix should be either (a) in the adapter's `waitForReady` to verify the banner image loaded, or (b) nowhere because the test is correctly flagging a real bug. | REJECT  |
 
