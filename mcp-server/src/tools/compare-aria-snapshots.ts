@@ -11,20 +11,45 @@ interface LineDiff {
   line: string;
 }
 
-const diffLines = (baseline: string, candidate: string): LineDiff[] => {
-  const baseLines = baseline.split('\n');
-  const candLines = candidate.split('\n');
-  const baseSet = new Set(baseLines);
-  const candSet = new Set(candLines);
+// Line-level LCS diff: emits ordered removed/added runs. Unlike a set-based diff, this
+// catches duplicated identical nodes and same-level sibling reorders in a dense ARIA tree.
+export const diffLines = (baseline: string, candidate: string): LineDiff[] => {
+  const a = baseline.split('\n');
+  const b = candidate.split('\n');
+  const m = a.length;
+  const n = b.length;
 
-  const removed: LineDiff[] = baseLines
-    .filter((line) => !candSet.has(line))
-    .map((line) => ({ type: 'removed', line }));
-  const added: LineDiff[] = candLines
-    .filter((line) => !baseSet.has(line))
-    .map((line) => ({ type: 'added', line }));
+  // dp[i][j] = LCS length of a[i:] and b[j:].
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
+  for (let i = m - 1; i >= 0; i--) {
+    const row = dp[i] as number[];
+    const next = dp[i + 1] as number[];
+    for (let j = n - 1; j >= 0; j--) {
+      row[j] =
+        a[i] === b[j]
+          ? (next[j + 1] as number) + 1
+          : Math.max(next[j] as number, row[j + 1] as number);
+    }
+  }
 
-  return [...removed, ...added];
+  const out: LineDiff[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < m && j < n) {
+    if (a[i] === b[j]) {
+      i++;
+      j++;
+    } else if ((dp[i + 1] as number[])[j]! >= (dp[i] as number[])[j + 1]!) {
+      out.push({ type: 'removed', line: a[i] as string });
+      i++;
+    } else {
+      out.push({ type: 'added', line: b[j] as string });
+      j++;
+    }
+  }
+  while (i < m) out.push({ type: 'removed', line: a[i++] as string });
+  while (j < n) out.push({ type: 'added', line: b[j++] as string });
+  return out;
 };
 
 export const compareAriaSnapshots = async (
