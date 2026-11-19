@@ -31,13 +31,14 @@ const now = Date.now();
 const hoursAgo = (h: number): string => new Date(now - h * 60 * 60 * 1000).toISOString();
 const daysAgo = (d: number): string => new Date(now - d * 24 * 60 * 60 * 1000).toISOString();
 
+// Stored oldest-first on purpose, so get-failing-tests' newest-first sort is observable.
 export const fixtureFailures: TestFailure[] = [
   {
-    test_path: 'tests/auth/login.spec.ts',
-    line: 32,
-    timestamp: hoursAgo(2),
-    message: 'Timed out waiting for getByRole("button", { name: "Sign in" })',
-    attempt: 2,
+    test_path: 'tests/browse/category.spec.ts',
+    line: 47,
+    timestamp: hoursAgo(20),
+    message: 'Locator not found: data-testid="hero-carousel"',
+    attempt: 3,
   },
   {
     test_path: 'tests/checkout/checkout.spec.ts',
@@ -47,11 +48,11 @@ export const fixtureFailures: TestFailure[] = [
     attempt: 1,
   },
   {
-    test_path: 'tests/browse/category.spec.ts',
-    line: 47,
-    timestamp: hoursAgo(20),
-    message: 'Locator not found: data-testid="hero-carousel"',
-    attempt: 3,
+    test_path: 'tests/auth/login.spec.ts',
+    line: 32,
+    timestamp: hoursAgo(2),
+    message: 'Timed out waiting for getByRole("button", { name: "Sign in" })',
+    attempt: 2,
   },
 ];
 

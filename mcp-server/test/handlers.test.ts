@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { fixtureDeploys, fixtureFailures, fixtureFlakes } from '../src/data/fixtures.js';
-import { compareAriaSnapshots } from '../src/tools/compare-aria-snapshots.js';
+import { compareAriaSnapshots, diffLines } from '../src/tools/compare-aria-snapshots.js';
 import { getFailingTests } from '../src/tools/get-failing-tests.js';
 import { getFlakeRate } from '../src/tools/get-flake-rate.js';
 import { getRecentDeploys } from '../src/tools/get-recent-deploys.js';
@@ -44,9 +44,12 @@ describe('getFailingTests', () => {
     const rows = parseTextJson(result) as TestFailureRow[];
 
     assert.equal(rows.length, fixtureFailures.length);
+    const expectedOrder = [...fixtureFailures]
+      .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
+      .map((row) => row.test_path);
     assert.deepEqual(
       rows.map((row) => row.test_path),
-      fixtureFailures.map((row) => row.test_path),
+      expectedOrder,
     );
   });
 
@@ -67,7 +70,10 @@ describe('getFailingTests', () => {
     const rows = parseTextJson(result) as TestFailureRow[];
 
     assert.equal(rows.length, 1);
-    assert.equal(rows[0]?.test_path, fixtureFailures[0]?.test_path);
+    const newest = [...fixtureFailures].sort(
+      (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp),
+    )[0];
+    assert.equal(rows[0]?.test_path, newest?.test_path);
   });
 
   it('returns an empty list when since is in the future', async () => {
@@ -187,5 +193,19 @@ describe('compareAriaSnapshots', () => {
         }),
       /Snapshot not found.*candidate_id=missing-candidate found=false/,
     );
+  });
+});
+
+describe('diffLines (LCS)', () => {
+  it('reports a removed duplicate line the set diff would miss', () => {
+    const diff = diffLines('- item\n- item', '- item');
+    assert.deepEqual(diff, [{ type: 'removed', line: '- item' }]);
+  });
+
+  it('reports a sibling reorder as non-empty (set diff returns empty)', () => {
+    const diff = diffLines('- a\n- b', '- b\n- a');
+    assert.ok(diff.length > 0);
+    assert.ok(diff.some((d) => d.type === 'removed'));
+    assert.ok(diff.some((d) => d.type === 'added'));
   });
 });

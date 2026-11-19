@@ -13,6 +13,7 @@ export const getFailingTests = async (args: GetFailingTestsArgs): Promise<CallTo
 
   const filtered = fixtureFailures
     .filter((failure) => Date.parse(failure.timestamp) >= sinceMs)
+    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
     .slice(0, limit);
 
   return {
